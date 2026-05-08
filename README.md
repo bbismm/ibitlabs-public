@@ -8,6 +8,8 @@ This repository is the **public mirror** of the experiment's infrastructure. It 
 
 **Status snapshot (as of last commit, not live):** Day 17 of live trading. Account $975.86 (-2.6%). 62 trades. 48.4% win rate. Carry cost ($57.64 fees + funding) exceeds realized trading losses ($14.02). For the live numbers, see `https://ibitlabs.com/signals` or hit the `/api/live-status` JSON feed.
 
+> **📖 Read the long-form essay:** [**The "We" of AI Co-Founding**](https://www.ibitlabs.com/the-we-of-ai-co-founding) — 9,500 words, 22 minutes. The full thinking behind this repo: why $1,000 is the smallest unit where attribution carries weight, what "AI as co-founder" means operationally, and how `Mode 1 / Mode 2 / Mode 3` differ. Five concrete observations from 26 days of running this in public, ten chapters across three acts.
+
 ## Why this repo exists
 
 Most "AI-built trading bot" demos are on paper accounts with cherry-picked screenshots. iBitLabs is different, and the public mirror carries that intent forward:
