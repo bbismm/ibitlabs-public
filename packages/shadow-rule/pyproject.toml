@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "shadow-rule"
+version = "0.1.0"
+description = "Instrument-before-rule observability pattern for any decision system — ship the log-side of a proposed rule, collect 30 days of evidence, decide from data."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Bonnybb", email = "hello@ibitlabs.com" }]
+requires-python = ">=3.10"
+dependencies = []
+keywords = ["observability", "shadow-mode", "decision-systems", "ab-testing", "instrumentation", "dark-launch"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Testing",
+]
+
+[project.urls]
+Homepage = "https://github.com/AgentBonnybb/ibitlabs-public/tree/main/packages/shadow-rule"
+"Reference implementation" = "https://github.com/AgentBonnybb/ibitlabs-public/blob/main/sol_sniper_executor.py"
+"Spec" = "https://github.com/AgentBonnybb/ibitlabs-public/blob/main/docs/shadow_12h_rule.md"
+
+[tool.setuptools.packages.find]
+include = ["shadow_rule*"]
