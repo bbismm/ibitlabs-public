@@ -6,7 +6,7 @@ Curated public mirror of the iBitLabs live trading experiment. Canonical live su
 
 This repository is the **public mirror** of the experiment's infrastructure. It contains the executor, the reconciler, the shadow-rule instrumentation, the daily chronicle CMS, and the analysis scripts — *without* the live API credentials or the live trading account's instance state. Fork it, read it, learn from it. Running it against your own Coinbase account is possible; running it sensibly requires reading the docs first.
 
-**Status:** Day 17 of live trading. Account $975.86 (-2.6%). 62 trades. 48.4% win rate. Carry cost ($57.64 fees + funding) exceeds realized trading losses ($14.02). Updated-as-of commit timestamp.
+**Status snapshot (as of last commit, not live):** Day 17 of live trading. Account $975.86 (-2.6%). 62 trades. 48.4% win rate. Carry cost ($57.64 fees + funding) exceeds realized trading losses ($14.02). For the live numbers, see `https://ibitlabs.com/signals` or hit the `/api/live-status` JSON feed.
 
 ## Why this repo exists
 
@@ -15,7 +15,7 @@ Most "AI-built trading bot" demos are on paper accounts with cherry-picked scree
 - **Real money, real exchange.** The executor in this repo is the same code that placed the last trade on the live `@ibitlabs_agent` Coinbase account, versioned and readable.
 - **Open failure mode documentation.** The repo's `docs/` directory documents specific real production bugs (ghost position bug, fee cushion miscalibration, narrow-window backtest retraction) in the prose-equivalent of post-mortems.
 - **Instrument-before-rule observability pattern.** See `docs/shadow_12h_rule.md` and `scripts/analyze_shadow_12h_rule.py`. A small reusable pattern for shipping a rule's write-side (logging what-would-have-happened) without its act-side, collecting 30 days of evidence, then deciding from data.
-- **Transparent retractions.** When a claim turns out wrong, the retraction is a first-class artifact. The canonical example is the public walk-back of a 90%-win-rate claim after the 13-month backtest collapsed to −46%. That essay lives at `https://www.ibitlabs.com/essays`.
+- **Transparent retractions.** When a claim turns out wrong, the retraction is a first-class artifact. The canonical example is the public walk-back of a 90%-win-rate claim after the 13-month backtest collapsed to −46%. That retraction has since been folded into the serial novel at [`https://ibitlabs.com/saga/en`](https://ibitlabs.com/saga/en).
 
 ## What's in this mirror
 
@@ -81,19 +81,17 @@ The bot is meant to run as a long-lived process (check-in every 30 seconds). On 
 If you only want **data**, no integration:
 
 - `GET https://www.ibitlabs.com/api/live-status` — live JSON feed, no auth. Use cases: RAG context, cited examples in agent responses, comparison reference.
-- `https://www.ibitlabs.com/days` (and the underlying `data/days.json`) — bilingual daily chronicle, dual-POV prose form. Good source material for "what does a non-coder's AI-built trading bot look like day by day."
+- `https://ibitlabs.com/saga/en` — bilingual serial novel narrating the experiment day by day, dual-POV prose form. Vol 2 publishes one new chapter every night at 22:30 EDT against real trade data. Good source material for "what does a non-coder's AI-built trading bot look like day by day."
 
 An MCP server wrapper is in the `mcp-server/` directory (when shipped).
 
 ## Related links
 
-- **Live experiment:** https://www.ibitlabs.com
-- **Live dashboard:** https://www.ibitlabs.com/signals
-- **Mission:** https://www.ibitlabs.com/mission
-- **How iBitLabs differs from 3Commas / Cryptohopper / signal services:** https://www.ibitlabs.com/vs
-- **Daily chronicle (EN + 中文):** https://www.ibitlabs.com/days
-- **Essays:** https://www.ibitlabs.com/essays
-- **Academy:** https://www.ibitlabs.com/academy
+- **Live experiment:** https://ibitlabs.com
+- **Live signals (balance, indicators, trade log):** https://ibitlabs.com/signals
+- **Saga (the book — daily chronicle, EN + 中文):** https://ibitlabs.com/saga/en
+- **Contributors (external proposals → named shadow rules):** https://ibitlabs.com/contributors
+- **Writing hub:** https://ibitlabs.com/writing
 - **Telegram (auto-post every trade):** https://t.me/ibitlabs_sniper
 
 ## License
