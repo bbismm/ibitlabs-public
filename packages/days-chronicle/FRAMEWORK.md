@@ -91,7 +91,7 @@ The frontend CSS relies on these class hooks (generator must emit them exactly):
 
 `scripts/days_generator.py` reads:
 - `sol_sniper.db` — that day's trades (entry, exit, PnL, exit reason)
-- `git log --since ... --until ...` — that day's commits in `/Users/bonnyagent/ibitlabs`
+- `git log --since ... --until ...` — that day's commits in `.`
 - Notion Project Hub daily posts (via MCP, read-only for background only)
 - Local live-status state (daily snapshot)
 
@@ -126,7 +126,7 @@ This is the execution spec the scheduled task must follow. All previous framewor
 
 ### Step 0 — Get today's data
 ```bash
-python3 /Users/bonnyagent/ibitlabs/scripts/days_generator.py --data-only
+python3 ./scripts/days_generator.py --data-only
 ```
 Returns JSON with: `date`, `dayNumber`, `trades[]`, `trade_summary`, `cumulative_pnl`, `account`, `sol_price`, `commits[]`, `prior_days_full[]`.
 
@@ -203,17 +203,17 @@ json.dump(payload, open("web/public/data/days.json", "w"), ensure_ascii=False, i
 
 ### Step 5 — Commit + deploy
 ```bash
-cd /Users/bonnyagent/ibitlabs
+cd .
 git add web/public/data/days.json
 git commit -m "Day $N · $TITLE_WORD"
 
-cd /Users/bonnyagent/ibitlabs/web
+cd ./web
 wrangler pages deploy public --project-name=bibsus --branch=main --commit-dirty=true
 ```
 
 ### Step 5.5 — Broadcast (Twitter @BonnyOuyang + Telegram @ibitlabs_sniper)
 ```bash
-python3 /Users/bonnyagent/ibitlabs/scripts/days_broadcast.py --day $N
+python3 ./scripts/days_broadcast.py --day $N
 ```
 This posts **this day's** tagline + pull quote + URL to both channels (Twitter as **thread**: root teaser + body reply chain; Telegram as single message). Uses OAuth 1.0a for Twitter (stable, non-expiring tokens). Language = EN (site default).
 
@@ -221,13 +221,13 @@ This posts **this day's** tagline + pull quote + URL to both channels (Twitter a
 
 ### Step 5.6 — Regenerate RSS
 ```bash
-python3 /Users/bonnyagent/ibitlabs/scripts/days_rss.py
+python3 ./scripts/days_rss.py
 ```
 Regenerates `web/public/data/days.rss` from `days.json`. Run AFTER adding the new Day to the JSON, BEFORE the wrangler deploy (so the deploy ships the updated RSS).
 
 ### Step 5.7 — IndexNow ping (Bing / Yandex / Seznam / Naver)
 ```bash
-python3 /Users/bonnyagent/ibitlabs/scripts/indexnow_ping.py --day $N
+python3 ./scripts/indexnow_ping.py --day $N
 ```
 Sends a single POST to `api.indexnow.org` with the new Day URL + /days index + sitemap + RSS. Typical latency to index: 40 sec – a few hours. **Google doesn't participate** in IndexNow — Google relies on sitemap.xml + Search Console. Run this AFTER wrangler deploy completes (so the URLs are actually live).
 
