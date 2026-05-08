@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "ibitlabs": {
+      "command": "python",
+      "args": ["-m", "ibitlabs_mcp.server"],
+      "_comment": "Install first with `pip install -e path/to/ibitlabs-public/mcp-server`. On macOS this config file lives at ~/Library/Application Support/Claude/claude_desktop_config.json. Restart Claude Desktop after editing. Six read-only tools (get_live_status, get_position, get_recent_trades, get_shadow_fires, list_days, get_day) appear in the tool picker."
+    }
+  }
+}

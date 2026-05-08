@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ibitlabs-mcp"
+version = "0.1.0"
+description = "MCP server exposing iBitLabs live trading data (balance, PnL, position, fees, funding, trades, daily chronicle) as tools any Claude / OpenClaw / MCP-compatible agent can call."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Bonnybb", email = "hello@ibitlabs.com" }]
+requires-python = ">=3.10"
+dependencies = [
+    "mcp>=0.9.0",
+    "httpx>=0.27.0",
+]
+keywords = ["mcp", "crypto", "trading", "coinbase", "solana", "live-data", "ai-agent"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial :: Investment",
+]
+
+[project.urls]
+Homepage = "https://www.ibitlabs.com"
+Repository = "https://github.com/AgentBonnybb/ibitlabs-public"
+"Live Data API" = "https://www.ibitlabs.com/api/live-status"
+"Live Dashboard" = "https://www.ibitlabs.com/signals"
+
+[project.scripts]
+ibitlabs-mcp = "ibitlabs_mcp.server:main"
+
+[tool.setuptools.packages.find]
+include = ["ibitlabs_mcp*"]
