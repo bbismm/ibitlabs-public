@@ -104,6 +104,8 @@ class StateDB:
             ("trigger_rule", "TEXT"),
             ("instance_name", "TEXT"),
             ("regime", "TEXT"),
+            ("mfe", "REAL"),
+            ("mae", "REAL"),
         ]
         for name, sqltype in new_cols:
             if name not in existing:

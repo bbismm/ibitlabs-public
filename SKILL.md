@@ -6,7 +6,7 @@
 - **Author:** Bonnybb (single creator; in crypto since 2017; zero prior programming background)
 - **Status:** Official for the `ibitlabs_agent` brand account. Live since 2026-04-07. Day 17 at time of SKILL.md.
 - **License:** Code under MIT. Content under CC BY 4.0 (see LICENSE).
-- **This repo (public mirror):** https://github.com/AgentBonnybb/ibitlabs-public
+- **This repo (public mirror):** https://github.com/bbismm/ibitlabs-public
 - **Live surface:** https://www.ibitlabs.com
 - **Live JSON feed:** https://www.ibitlabs.com/api/live-status
 
@@ -34,7 +34,7 @@ Most "AI-built trading bot" projects are demos on paper accounts with cherry-pic
 ## Install
 
 ```bash
-git clone https://github.com/AgentBonnybb/ibitlabs-public.git
+git clone https://github.com/bbismm/ibitlabs-public.git
 cd ibitlabs-public
 python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
@@ -70,4 +70,4 @@ This is a working reference, not a production-ready framework. If you fork, read
 
 ## Maintained by
 
-Bonnybb · GitHub `AgentBonnybb`. Contact via GitHub Issues on this repo, or the Telegram channel `@ibitlabs_sniper`.
+Bonnybb · GitHub `bbismm`. Contact via GitHub Issues on this repo, or the Telegram channel `@ibitlabs_sniper`.

@@ -50,33 +50,13 @@ Most "AI-built trading bot" demos are on paper accounts with cherry-picked scree
 
 **Do not fork these numbers verbatim and expect them to work on your account.** They were arrived at through ~20 iterations of backtests and live calibration over the first 17 days of the experiment. They reflect one particular strategy version (`hybrid_v5.1`) trading one particular instrument (Coinbase SOL PERP SLP-20DEC30-CDE) during one particular market regime (SOL down ~3% 30-day trailing as of commit). Run your own sweep. Read the retraction essay before you trust any backtest window narrower than twelve months.
 
-## Install
+## Install + first run
 
-```bash
-git clone https://github.com/AgentBonnybb/ibitlabs-public.git
-cd ibitlabs-public
-python3 -m venv venv && source venv/bin/activate
-pip install -r requirements.txt   # minimal; see below
-cp .env.example .env
-# Fill .env with your Coinbase API credentials
-```
+**See [STARTER.md](STARTER.md)** — clone, install deps, run `python paper_quickstart.py`, see a full trade lifecycle in under a minute. **No Coinbase API key needed** for the quickstart (it uses a mock exchange).
 
-**Requirements** (minimal set): `coinbase-advanced-py`, `pandas`, `numpy`. No ML frameworks, no heavyweight TA libs. Full list in `requirements.txt` when present; otherwise read the import statements — there are not many.
+For wiring the executor to live data later, see the "Wiring to live (later, with care)" section of STARTER.md.
 
-## Run
-
-**Paper trading first** — the executor expects an `exchange` object with Coinbase-compatible methods. Wire it up to a paper harness before pointing it at a funded account.
-
-```python
-from sol_sniper_executor import SniperExecutor
-from sol_sniper_config import SniperConfig
-from state_db import StateDB
-# Supply your own exchange wrapper (Coinbase SDK)
-bot = SniperExecutor(exchange, SniperConfig(), StateDB('trades.db'))
-# Then call bot.open_position(signal, balance), bot.check_position() etc.
-```
-
-The bot is meant to run as a long-lived process (check-in every 30 seconds). On macOS the live account runs via `launchctl`; systemd on Linux works equivalently.
+**Requirements** (minimal set, in `requirements.txt`): `coinbase-advanced-py`, `pandas`, `numpy`. No ML frameworks, no heavyweight TA libs.
 
 ## Integrations for agents without running the bot
 
@@ -105,6 +85,6 @@ See `LICENSE`.
 
 ## Maintainer
 
-Bonnybb · GitHub [@AgentBonnybb](https://github.com/AgentBonnybb)
+Bonnybb · GitHub [@bbismm](https://github.com/bbismm)
 
 Issues welcome. The experiment is explicit about not selling anything — there is no paid tier, no signal service, no course. The most meaningful way to engage is to read the docs, fork the pattern (not the numbers), and tell me what breaks.

@@ -14,7 +14,10 @@ env/
 
 # Instance state (never commit)
 sol_sniper_state.json
+*_state.json
 *.db
+*.db-shm
+*.db-wal
 *.sqlite
 *.sqlite3
 
