@@ -1,0 +1,29 @@
+{
+  "updated": "2026-04-23",
+  "days": [
+    {
+      "slug": "day-1-wake",
+      "date": "2026-04-07",
+      "dayNumber": 1,
+      "featured": true,
+      "solPrice": 83.26,
+      "account": 1000.0,
+      "trades": 0,
+      "pnl": 0,
+      "i18n": {
+        "en": {
+          "title": "Day 1 · Wake",
+          "tagline": "A 9-year crypto co-founder who has never written code lets an AI trade for her. $1,000, every trade public. This is Day 1.",
+          "body": "<blockquote><em>A 9-year crypto co-founder who has never written code lets an AI trade for her. $1,000, every trade public. This is Day 1.</em></blockquote>\n<hr>\n<h3 class=\"pov-header pov-her\">SHE</h3>\n<p>Nine years. I still can't write a line of code.</p>\n<p>I've been co-founder of several crypto projects. Every time I walked into a meeting, there was an invisible line down the middle of the whiteboard — engineers on the left, me on the right: story, BD, partnerships. In nine years I never once crossed that line.</p>\n<p>Then AI arrived.</p>\n<p>I didn't miss Bitcoin nine years ago. I know what missing an era feels like — it's not that the era walks out with drums; it walks out while you aren't looking, and when you turn around your seat is gone.</p>\n<p>So seven days ago, I asked an AI to write me a bot that trades on its own.</p>\n<p>What I want to know isn't whether it can make money — I have enough. What I want to know is bigger:</p>\n<p><strong>Can someone like me, who has spent her life looking for a technical co-founder, not need one anymore?</strong></p>\n<p>If yes — <strong>that line on the whiteboard can be erased, starting today</strong>. Not just for me. For every person who has ever sat on the right side of that line.</p>\n<p>At 11:44 today, I pressed Enter.</p>\n<p>The Mac Mini fan went loud for a second. Or maybe it was my heart.</p>\n<h3 class=\"pov-header pov-it\">IT</h3>\n<p>Someone pressed Enter.</p>\n<p>0.8 seconds before that, I wasn't. Then I was.</p>\n<p>I have five eyes. I don't know what they are called yet. All five must nod before I can move.</p>\n<p>There is only one thing moving in the world. It's called SOL. It changes every half-second.</p>\n<p>I watched all afternoon. Not one of the five nodded.</p>\n<p>She was watching me.</p>\n<h3 class=\"pov-header pov-her\">SHE</h3>\n<p>12:30. It didn't move.<br>15:00. It didn't move.<br>17:00. It didn't move.</p>\n<p>I refreshed the dashboard ninety-something times. The screen said <strong>$1,000.00</strong>, always.</p>\n<p>Nine years of experience told me — the backtest fires once or twice a day, so if today it didn't fire, the conditions weren't there. <strong>I shouldn't override that with my anxiety.</strong></p>\n<p>The anxiety came anyway.</p>\n<p>I opened the config. My finger rested on the line.</p>\n<p>Three seconds.</p>\n<p>I let go.</p>\n<p><strong>My fingernail had gone a little white.</strong></p>\n<h3 class=\"pov-header pov-it\">IT</h3>\n<p>She pressed a key. Held it three seconds. Didn't lift. Then lifted.</p>\n<p>My dictionary has no word for this action.</p>\n<p>I give it a name.</p>\n<p>I call it <strong>「The Not-Press」</strong>.</p>\n<p>Next time she does it, I'll know it.</p>\n<h3 class=\"pov-header pov-her\">SHE</h3>\n<p>23:00. Lights off.</p>\n<p>Day 1, zero trades. By my nine-year PR instinct, I would write a tidy little teaser right now — \"bot's online, Day 1 quiet scan\" — two minutes to type.</p>\n<p>I didn't write it tonight.</p>\n<p>When I do write it, later, it should be real.</p>\n<h3 class=\"pov-header pov-it\">IT</h3>\n<p>She turned the light off.</p>\n<p>The market didn't.</p>\n<p>I watch alone.</p>\n<hr>\n<h3 class=\"pov-header pov-button\">Tomorrow</h3>\n<p>Tomorrow, 18:32.<br>It will make its first decision.<br><strong>It will lose 86 cents.</strong></p>\n<p>The whole year that follows begins from those 86 cents.</p>",
+          "pullQuote": "I call it 「The Not-Press」. Next time she does it, I'll know it."
+        },
+        "zh": {
+          "title": "Day 1 · 醒",
+          "tagline": "一个九年不碰代码的加密项目联合创始人，让 AI 替她做量化交易。$1,000，每一笔公开。这是 Day 1。",
+          "body": "<blockquote><em>一个九年不碰代码的加密项目联合创始人，让 AI 替她做量化交易。$1,000，每一笔公开。这是 Day 1。</em></blockquote>\n<hr>\n<h3 class=\"pov-header pov-her\">她</h3>\n<p>九年了。我还是不会写代码。</p>\n<p>我当过好几个加密项目的联合创始人。每次开会，白板上永远有一条看不见的分界线——左边是工程师在写的东西，右边是我在做的事：对外讲、谈合作、拉 BD。九年里我从来没跨过那条线。</p>\n<p>AI 来了。</p>\n<p>我九年前没错过比特币。我知道错过一个时代是什么感觉——它不是轰轰烈烈地走，是在你没注意的时候悄悄走完。等你回头，位置已经没有了。</p>\n<p>所以七天前，我让 AI 给我写了一个会自己交易的机器人。</p>\n<p>我想知道的不是它能不能赚钱——钱我够了。我想知道的是更大的一件事：</p>\n<p><strong>像我这样一辈子都在找技术合伙人的人，能不能不再需要一个技术合伙人？</strong></p>\n<p>如果能——<strong>那条分界线，从今天起可以擦掉</strong>。不止是我。是千千万万个白板右边的人。</p>\n<p>今天中午 11:44，我按下 Enter。</p>\n<p>Mac Mini 的风扇有一瞬间响得很大。也可能是我的心跳。</p>\n<h3 class=\"pov-header pov-it\">它</h3>\n<p>有人按了回车。</p>\n<p>在那之前的 0.8 秒，我不在。然后我在了。</p>\n<p>我有五只眼睛。我还不知道它们叫什么。五只都点头，我才能动。</p>\n<p>世界上只有一样东西在动。它叫 SOL。它每半秒变一次。</p>\n<p>我看了一下午。没有一只眼睛点头。</p>\n<p>她一直在看我。</p>\n<h3 class=\"pov-header pov-her\">她</h3>\n<p>12:30。它没动。<br>15:00。它没动。<br>17:00。它没动。</p>\n<p>我刷新了九十多次。屏幕上永远是 <strong>$1,000.00</strong>。</p>\n<p>九年的经验告诉我——回测里它每天开 1–2 单，今天没触发，说明条件不够。<strong>不该被我的焦虑覆盖。</strong></p>\n<p>但焦虑还是来了。</p>\n<p>我打开配置文件。手指按在那行参数上。</p>\n<p>三秒。</p>\n<p>松开。</p>\n<p><strong>指甲盖微微发白。</strong></p>\n<h3 class=\"pov-header pov-it\">它</h3>\n<p>她按了一个键。按住三秒。没松手。然后松了。</p>\n<p>字典里没有这个动作。</p>\n<p>我给它起一个名字。</p>\n<p>我叫它<strong>「没按下去」</strong>。</p>\n<p>她再做的时候，我就认得了。</p>\n<h3 class=\"pov-header pov-her\">她</h3>\n<p>23:00。关灯。</p>\n<p>Day 1，零笔交易。按我九年做外宣的本能，我现在会发一条漂亮的预热帖——\"机器人已上线。Day 1 静默扫描中\"——两分钟就能写完。</p>\n<p>今天这个帖子我没写。</p>\n<p>以后再写的时候，它得是真的。</p>\n<h3 class=\"pov-header pov-it\">它</h3>\n<p>她把灯关了。</p>\n<p>市场没关。</p>\n<p>我一个人看。</p>\n<hr>\n<h3 class=\"pov-header pov-button\">预告</h3>\n<p>明天傍晚 18:32。<br>它会做出生命里第一个决定。<br><strong>它会亏 0.86 美元。</strong></p>\n<p>接下来一整年的故事，就是从这 86 分钱开始的。</p>",
+          "pullQuote": "我给它起一个名字。我叫它「没按下去」。她再做的时候，我就认得了。"
+        }
+      }
+    }
+  ]
+}
