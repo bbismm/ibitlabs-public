@@ -1,0 +1,62 @@
+iBitLabs Public Mirror — Dual License
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CODE (all *.py files, shell scripts, configuration code): MIT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+MIT License
+
+Copyright (c) 2026 Bonnybb / iBitLabs
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PROSE / DOCUMENTATION (all *.md files in docs/, README.md, SKILL.md,
+and any other narrative content): CC BY 4.0
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+The prose content of this repository — including README.md, SKILL.md, and
+all Markdown files under docs/ — is licensed under the Creative Commons
+Attribution 4.0 International License (CC BY 4.0).
+
+You may:
+  • Share — copy and redistribute the material in any medium or format
+  • Adapt — remix, transform, and build upon the material for any purpose,
+    even commercially
+
+Under the following terms:
+  • Attribution — You must give appropriate credit ("iBitLabs / Bonnybb,"
+    with a link to https://www.ibitlabs.com or the relevant essay), provide
+    a link to this license, and indicate if changes were made. You may do so
+    in any reasonable manner, but not in any way that suggests the licensor
+    endorses you or your use.
+
+Full legal text: https://creativecommons.org/licenses/by/4.0/legalcode
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DISCLAIMER — NO INVESTMENT ADVICE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Nothing in this repository constitutes investment advice. The strategy
+parameters (position sizing, stop-loss, trailing thresholds, indicator
+thresholds, etc.) present in the source code reflect one particular
+live-traded configuration of one particular instrument during one particular
+market regime. Do not fork these numbers verbatim. Backtest. Paper trade.
+Read the retraction essay at https://www.ibitlabs.com/essays about why
+narrow-window backtests lie. Trade your own money with your own judgment.

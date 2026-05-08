@@ -1,0 +1,9 @@
+# Core — Coinbase Advanced Trade SDK
+coinbase-advanced-py>=1.0.0
+
+# Math / data
+numpy>=1.24
+pandas>=2.0
+
+# Standard library is sufficient for the rest (json, sqlite3, logging,
+# urllib, time, argparse, etc.)
