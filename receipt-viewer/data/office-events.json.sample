@@ -1,0 +1,611 @@
+{
+  "cursor": 20825,
+  "agents": [
+    {
+      "id": 101,
+      "folderName": "sniper_live"
+    },
+    {
+      "id": 102,
+      "folderName": "sniper_shadow"
+    },
+    {
+      "id": 103,
+      "folderName": "sniper_eth"
+    },
+    {
+      "id": 104,
+      "folderName": "rule_engine"
+    },
+    {
+      "id": 105,
+      "folderName": "ghost_watchdog"
+    }
+  ],
+  "events": [
+    {
+      "cursor": 20776,
+      "agentId": 101,
+      "kind": "tool_start",
+      "ts": 1778676133191,
+      "toolId": "toolu_8e879948fb414817a2341d25",
+      "toolName": "Read",
+      "status": "sniper-live: idle heartbeat",
+      "severity": "info"
+    },
+    {
+      "cursor": 20777,
+      "agentId": 104,
+      "kind": "tool_start",
+      "ts": 1778676133160,
+      "toolId": "toolu_2c1c2c7ee352485eb13b8183",
+      "toolName": "Read",
+      "status": "supervisor: rules ok",
+      "severity": "info",
+      "sourceKind": "heartbeat",
+      "payload": {
+        "status": "alive",
+        "latency_ms": null,
+        "watched_chains": 2,
+        "rules": 8
+      }
+    },
+    {
+      "cursor": 20778,
+      "agentId": 103,
+      "kind": "tool_start",
+      "ts": 1778676134722,
+      "toolId": "toolu_29b8687abdcf4c3ca8b4575a",
+      "toolName": "Read",
+      "status": "eth: state updated",
+      "severity": "info",
+      "sourceKind": "tick"
+    },
+    {
+      "cursor": 20779,
+      "agentId": 102,
+      "kind": "tool_start",
+      "ts": 1778676136311,
+      "toolId": "toolu_b6f02da899e14a609494add4",
+      "toolName": "Read",
+      "status": "sniper-shadow: idle heartbeat",
+      "severity": "info"
+    },
+    {
+      "cursor": 20780,
+      "agentId": 105,
+      "kind": "tool_start",
+      "ts": 1778676137911,
+      "toolId": "toolu_ade42b265bed4c8395df2080",
+      "toolName": "Read",
+      "status": "ghost-watchdog: idle heartbeat",
+      "severity": "info"
+    },
+    {
+      "cursor": 20781,
+      "agentId": 101,
+      "kind": "tool_end",
+      "ts": 1778676139493,
+      "toolId": "toolu_8e879948fb414817a2341d25"
+    },
+    {
+      "cursor": 20782,
+      "agentId": 104,
+      "kind": "tool_end",
+      "ts": 1778676139494,
+      "toolId": "toolu_2c1c2c7ee352485eb13b8183"
+    },
+    {
+      "cursor": 20783,
+      "agentId": 103,
+      "kind": "tool_end",
+      "ts": 1778676141075,
+      "toolId": "toolu_29b8687abdcf4c3ca8b4575a"
+    },
+    {
+      "cursor": 20784,
+      "agentId": 102,
+      "kind": "tool_end",
+      "ts": 1778676142672,
+      "toolId": "toolu_b6f02da899e14a609494add4"
+    },
+    {
+      "cursor": 20785,
+      "agentId": 105,
+      "kind": "tool_end",
+      "ts": 1778676144206,
+      "toolId": "toolu_ade42b265bed4c8395df2080"
+    },
+    {
+      "cursor": 20786,
+      "agentId": 103,
+      "kind": "tool_start",
+      "ts": 1778676150484,
+      "toolId": "toolu_1370a3a1ebde470e863b86fd",
+      "toolName": "Read",
+      "status": "eth: state updated",
+      "severity": "info",
+      "sourceKind": "tick"
+    },
+    {
+      "cursor": 20787,
+      "agentId": 105,
+      "kind": "tool_start",
+      "ts": 1778676153595,
+      "toolId": "toolu_0473f39987714d92b24df8bc",
+      "toolName": "Bash",
+      "status": "watchdog: GHOST",
+      "severity": "error",
+      "sourceKind": "alert",
+      "payload": {
+        "log": "2026-05-13 08:42:32 [GHOST-WATCHDOG] agreement: bot=True api=False margin=True (locked=$+192.13)"
+      }
+    },
+    {
+      "cursor": 20788,
+      "agentId": 101,
+      "kind": "tool_start",
+      "ts": 1778676156744,
+      "toolId": "toolu_619a5c2e0b8741a19d2bebba",
+      "toolName": "Read",
+      "status": "sniper-live: idle heartbeat",
+      "severity": "info"
+    },
+    {
+      "cursor": 20789,
+      "agentId": 103,
+      "kind": "tool_end",
+      "ts": 1778676156745,
+      "toolId": "toolu_1370a3a1ebde470e863b86fd"
+    },
+    {
+      "cursor": 20790,
+      "agentId": 104,
+      "kind": "tool_start",
+      "ts": 1778676156746,
+      "toolId": "toolu_83ddafd1a6f14d179a4bd3be",
+      "toolName": "Read",
+      "status": "rule-engine: idle heartbeat",
+      "severity": "info"
+    },
+    {
+      "cursor": 20791,
+      "agentId": 102,
+      "kind": "tool_start",
+      "ts": 1778676158347,
+      "toolId": "toolu_d176ce99fa7846e487aefb8c",
+      "toolName": "Read",
+      "status": "sniper-shadow: idle heartbeat",
+      "severity": "info"
+    },
+    {
+      "cursor": 20792,
+      "agentId": 105,
+      "kind": "tool_end",
+      "ts": 1778676159954,
+      "toolId": "toolu_0473f39987714d92b24df8bc"
+    },
+    {
+      "cursor": 20793,
+      "agentId": 101,
+      "kind": "tool_end",
+      "ts": 1778676163144,
+      "toolId": "toolu_619a5c2e0b8741a19d2bebba"
+    },
+    {
+      "cursor": 20794,
+      "agentId": 104,
+      "kind": "tool_end",
+      "ts": 1778676163146,
+      "toolId": "toolu_83ddafd1a6f14d179a4bd3be"
+    },
+    {
+      "cursor": 20795,
+      "agentId": 102,
+      "kind": "tool_end",
+      "ts": 1778676164749,
+      "toolId": "toolu_d176ce99fa7846e487aefb8c"
+    },
+    {
+      "cursor": 20796,
+      "agentId": 103,
+      "kind": "tool_start",
+      "ts": 1778676166348,
+      "toolId": "toolu_1ae3dfe5c150495692fdfeb7",
+      "toolName": "Read",
+      "status": "eth: state updated",
+      "severity": "info",
+      "sourceKind": "tick"
+    },
+    {
+      "cursor": 20797,
+      "agentId": 103,
+      "kind": "tool_end",
+      "ts": 1778676172713,
+      "toolId": "toolu_1ae3dfe5c150495692fdfeb7"
+    },
+    {
+      "cursor": 20798,
+      "agentId": 105,
+      "kind": "tool_start",
+      "ts": 1778676175897,
+      "toolId": "toolu_2bb5fe98d17f4c44b3f41262",
+      "toolName": "Read",
+      "status": "ghost-watchdog: idle heartbeat",
+      "severity": "info"
+    },
+    {
+      "cursor": 20799,
+      "agentId": 101,
+      "kind": "tool_start",
+      "ts": 1778676179080,
+      "toolId": "toolu_6ec2c1daf36843a69bb6962d",
+      "toolName": "Read",
+      "status": "sniper-live: idle heartbeat",
+      "severity": "info"
+    },
+    {
+      "cursor": 20800,
+      "agentId": 104,
+      "kind": "tool_start",
+      "ts": 1778676179081,
+      "toolId": "toolu_18d88e09223b43bc91b49d2f",
+      "toolName": "Read",
+      "status": "rule-engine: idle heartbeat",
+      "severity": "info"
+    },
+    {
+      "cursor": 20801,
+      "agentId": 102,
+      "kind": "tool_start",
+      "ts": 1778676180677,
+      "toolId": "toolu_2784135d18754ad5871a2adf",
+      "toolName": "Read",
+      "status": "sniper-shadow: idle heartbeat",
+      "severity": "info"
+    },
+    {
+      "cursor": 20802,
+      "agentId": 103,
+      "kind": "tool_start",
+      "ts": 1778676182269,
+      "toolId": "toolu_3774cfaa83724a91a807b3b8",
+      "toolName": "Read",
+      "status": "eth: state updated",
+      "severity": "info",
+      "sourceKind": "tick"
+    },
+    {
+      "cursor": 20803,
+      "agentId": 105,
+      "kind": "tool_end",
+      "ts": 1778676182270,
+      "toolId": "toolu_2bb5fe98d17f4c44b3f41262"
+    },
+    {
+      "cursor": 20804,
+      "agentId": 101,
+      "kind": "tool_end",
+      "ts": 1778676185472,
+      "toolId": "toolu_6ec2c1daf36843a69bb6962d"
+    },
+    {
+      "cursor": 20805,
+      "agentId": 104,
+      "kind": "tool_end",
+      "ts": 1778676185473,
+      "toolId": "toolu_18d88e09223b43bc91b49d2f"
+    },
+    {
+      "cursor": 20806,
+      "agentId": 102,
+      "kind": "tool_end",
+      "ts": 1778676187022,
+      "toolId": "toolu_2784135d18754ad5871a2adf"
+    },
+    {
+      "cursor": 20807,
+      "agentId": 103,
+      "kind": "tool_end",
+      "ts": 1778676188624,
+      "toolId": "toolu_3774cfaa83724a91a807b3b8"
+    },
+    {
+      "cursor": 20808,
+      "agentId": 104,
+      "kind": "tool_start",
+      "ts": 1778676194763,
+      "toolId": "toolu_338423e2bf04437ab2ebb89b",
+      "toolName": "Read",
+      "status": "supervisor: rules ok",
+      "severity": "info",
+      "sourceKind": "heartbeat",
+      "payload": {
+        "status": "alive",
+        "latency_ms": null,
+        "watched_chains": 2,
+        "rules": 8
+      }
+    },
+    {
+      "cursor": 20809,
+      "agentId": 103,
+      "kind": "tool_start",
+      "ts": 1778676198219,
+      "toolId": "toolu_5ded95bb240e4040972021da",
+      "toolName": "Read",
+      "status": "eth: state updated",
+      "severity": "info",
+      "sourceKind": "tick"
+    },
+    {
+      "cursor": 20810,
+      "agentId": 105,
+      "kind": "tool_start",
+      "ts": 1778676198220,
+      "toolId": "toolu_f4273f23182c4901851c3ded",
+      "toolName": "Read",
+      "status": "ghost-watchdog: idle heartbeat",
+      "severity": "info"
+    },
+    {
+      "cursor": 20811,
+      "agentId": 101,
+      "kind": "tool_start",
+      "ts": 1778676201422,
+      "toolId": "toolu_cec06a5db10b4da6bcb1775c",
+      "toolName": "Read",
+      "status": "sniper-live: idle heartbeat",
+      "severity": "info"
+    },
+    {
+      "cursor": 20812,
+      "agentId": 104,
+      "kind": "tool_end",
+      "ts": 1778676201424,
+      "toolId": "toolu_338423e2bf04437ab2ebb89b"
+    },
+    {
+      "cursor": 20813,
+      "agentId": 102,
+      "kind": "tool_start",
+      "ts": 1778676203024,
+      "toolId": "toolu_0bbbb9d24b9241a69193bf66",
+      "toolName": "Read",
+      "status": "sniper-shadow: idle heartbeat",
+      "severity": "info"
+    },
+    {
+      "cursor": 20814,
+      "agentId": 103,
+      "kind": "tool_end",
+      "ts": 1778676204624,
+      "toolId": "toolu_5ded95bb240e4040972021da"
+    },
+    {
+      "cursor": 20815,
+      "agentId": 105,
+      "kind": "tool_end",
+      "ts": 1778676204625,
+      "toolId": "toolu_f4273f23182c4901851c3ded"
+    },
+    {
+      "cursor": 20816,
+      "agentId": 101,
+      "kind": "tool_end",
+      "ts": 1778676207824,
+      "toolId": "toolu_cec06a5db10b4da6bcb1775c"
+    },
+    {
+      "cursor": 20817,
+      "agentId": 102,
+      "kind": "tool_end",
+      "ts": 1778676209424,
+      "toolId": "toolu_0bbbb9d24b9241a69193bf66"
+    },
+    {
+      "cursor": 20818,
+      "agentId": 105,
+      "kind": "tool_start",
+      "ts": 1778676214188,
+      "toolId": "toolu_0a8a13a302004e7b9c19c818",
+      "toolName": "Bash",
+      "status": "watchdog: GHOST",
+      "severity": "error",
+      "sourceKind": "alert",
+      "payload": {
+        "log": "2026-05-13 08:43:33 [GHOST-WATCHDOG] agreement: bot=True api=False margin=True (locked=$+192.33)"
+      }
+    },
+    {
+      "cursor": 20819,
+      "agentId": 103,
+      "kind": "tool_start",
+      "ts": 1778676215790,
+      "toolId": "toolu_26a33c7b5c7d4fa584112885",
+      "toolName": "Read",
+      "status": "eth: state updated",
+      "severity": "info",
+      "sourceKind": "tick"
+    },
+    {
+      "cursor": 20820,
+      "agentId": 104,
+      "kind": "tool_start",
+      "ts": 1778676217388,
+      "toolId": "toolu_96320953e2eb44a49e1ce318",
+      "toolName": "Read",
+      "status": "rule-engine: idle heartbeat",
+      "severity": "info"
+    },
+    {
+      "cursor": 20821,
+      "agentId": 105,
+      "kind": "tool_end",
+      "ts": 1778676220494,
+      "toolId": "toolu_0a8a13a302004e7b9c19c818"
+    },
+    {
+      "cursor": 20822,
+      "agentId": 103,
+      "kind": "tool_end",
+      "ts": 1778676222077,
+      "toolId": "toolu_26a33c7b5c7d4fa584112885"
+    },
+    {
+      "cursor": 20823,
+      "agentId": 101,
+      "kind": "tool_start",
+      "ts": 1778676223688,
+      "toolId": "toolu_1a29b6686bf54f0db68192ea",
+      "toolName": "Read",
+      "status": "sniper-live: idle heartbeat",
+      "severity": "info"
+    },
+    {
+      "cursor": 20824,
+      "agentId": 104,
+      "kind": "tool_end",
+      "ts": 1778676223689,
+      "toolId": "toolu_96320953e2eb44a49e1ce318"
+    },
+    {
+      "cursor": 20825,
+      "agentId": 102,
+      "kind": "tool_start",
+      "ts": 1778676225270,
+      "toolId": "toolu_2ba1b120fc9c4a76850a8679",
+      "toolName": "Read",
+      "status": "sniper-shadow: idle heartbeat",
+      "severity": "info"
+    }
+  ],
+  "stats": {
+    "101": {
+      "total_trades": 61,
+      "total_pnl": -11.0143,
+      "today_trades": 0,
+      "today_pnl": 0,
+      "win_count": 33,
+      "loss_count": 28,
+      "win_rate": 0.541,
+      "last_pnl": 8.4157,
+      "last_trade_ts": 1778516301000
+    },
+    "102": {
+      "total_trades": 37,
+      "total_pnl": 204.8755,
+      "today_trades": 2,
+      "today_pnl": 10.001,
+      "win_count": 28,
+      "loss_count": 9,
+      "win_rate": 0.7568,
+      "last_pnl": 11.8942,
+      "last_trade_ts": 1778670308000
+    },
+    "103": {
+      "total_trades": 2,
+      "total_pnl": 39.7741,
+      "today_trades": 0,
+      "today_pnl": 0,
+      "win_count": 2,
+      "loss_count": 0,
+      "win_rate": 1.0,
+      "last_pnl": 20.7568,
+      "last_trade_ts": 1778578448000
+    }
+  },
+  "achievements_catalog": [
+    {
+      "id": "first_trade",
+      "label": "First trade",
+      "icon": "\ud83d\ude80",
+      "reset": "never"
+    },
+    {
+      "id": "ten_trades",
+      "label": "10 trades",
+      "icon": "\ud83d\udd1f",
+      "reset": "never"
+    },
+    {
+      "id": "fifty_trades",
+      "label": "50 trades",
+      "icon": "\ud83d\udcc8",
+      "reset": "never"
+    },
+    {
+      "id": "hundred_trades",
+      "label": "100 trades",
+      "icon": "\ud83d\udcaf",
+      "reset": "never"
+    },
+    {
+      "id": "in_the_green",
+      "label": "In the green",
+      "icon": "\ud83d\udcb0",
+      "reset": "never"
+    },
+    {
+      "id": "wr_60",
+      "label": "60% win rate",
+      "icon": "\ud83c\udfaf",
+      "reset": "never"
+    },
+    {
+      "id": "wr_80",
+      "label": "80% win rate",
+      "icon": "\ud83c\udfc6",
+      "reset": "never"
+    },
+    {
+      "id": "comeback",
+      "label": "Comeback (PnL > $100)",
+      "icon": "\u26a1",
+      "reset": "never"
+    },
+    {
+      "id": "today_active",
+      "label": "Active day (3+ trades)",
+      "icon": "\ud83d\udd25",
+      "reset": "daily"
+    },
+    {
+      "id": "today_in_green",
+      "label": "Green day",
+      "icon": "\ud83c\udf31",
+      "reset": "daily"
+    },
+    {
+      "id": "today_big_green",
+      "label": "Big green day ($20+)",
+      "icon": "\ud83c\udf34",
+      "reset": "daily"
+    },
+    {
+      "id": "today_huge_green",
+      "label": "Huge green day ($100+)",
+      "icon": "\ud83c\udfb0",
+      "reset": "daily"
+    }
+  ],
+  "agents_achievements": {
+    "101": [
+      "fifty_trades",
+      "first_trade",
+      "ten_trades"
+    ],
+    "102": [
+      "comeback",
+      "first_trade",
+      "in_the_green",
+      "ten_trades",
+      "today_in_green",
+      "wr_60"
+    ],
+    "103": [
+      "first_trade",
+      "in_the_green"
+    ]
+  }
+}

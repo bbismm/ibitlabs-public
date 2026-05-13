@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Receipt — verify any agent</title>
+<style>
+  :root {
+    --bg: #0d1117; --fg: #e6edf3; --muted: #7d8590;
+    --green: #3fb950; --red: #f85149; --yellow: #d29922; --orange: #db6d28;
+    --card: #161b22; --border: #30363d;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.55 -apple-system, BlinkMacSystemFont, sans-serif;
+         background: var(--bg); color: var(--fg); }
+  header { padding: 32px 24px; border-bottom: 1px solid var(--border); }
+  header .inner { max-width: 880px; margin: 0 auto; }
+  h1 { margin: 0; font-size: 28px; font-weight: 600; }
+  .tagline { color: var(--muted); margin-top: 8px; }
+  .axiom { color: var(--green); margin-top: 4px; font-style: italic; font-size: 13px; }
+  main { max-width: 880px; margin: 0 auto; padding: 24px; }
+  .controls { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+  input, button { font: inherit; padding: 8px 14px; border-radius: 6px;
+                  border: 1px solid var(--border); background: var(--card); color: var(--fg); }
+  input { flex: 1; min-width: 220px; font-family: var(--mono); font-size: 13px; }
+  button { cursor: pointer; }
+  button.primary { background: #238636; border-color: #2ea043; color: white; font-weight: 600; }
+  button.primary:hover { background: #2ea043; }
+
+  /* verdict block — large, color-first */
+  .verdict-block { padding: 32px 24px; border-radius: 12px; margin-bottom: 16px;
+                   border: 2px solid var(--border); background: var(--card); position: relative; }
+  .verdict-block.green  { border-color: var(--green);  background: linear-gradient(0deg, rgba(63,185,80,0.05), rgba(63,185,80,0.12)); }
+  .verdict-block.yellow { border-color: var(--yellow); background: linear-gradient(0deg, rgba(210,153,34,0.05), rgba(210,153,34,0.12)); }
+  .verdict-block.red    { border-color: var(--red);    background: linear-gradient(0deg, rgba(248,81,73,0.05), rgba(248,81,73,0.12)); }
+  .verdict-icon { font-size: 64px; line-height: 1; }
+  .verdict-label { font-size: 36px; font-weight: 700; margin-top: 8px; letter-spacing: -0.5px; }
+  .verdict-block.green  .verdict-label { color: var(--green); }
+  .verdict-block.yellow .verdict-label { color: var(--yellow); }
+  .verdict-block.red    .verdict-label { color: var(--red); }
+  .score-line { font-size: 20px; color: var(--muted); margin-top: 12px; }
+  .score-line strong { color: var(--fg); font-size: 28px; font-weight: 700; }
+  .verdict-meta { color: var(--muted); font-size: 13px; margin-top: 12px; font-family: var(--mono); }
+
+  /* dimension grid */
+  .dims { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+          gap: 12px; margin-top: 16px; }
+  .dim { padding: 14px; background: var(--bg); border-radius: 8px;
+         border: 1px solid var(--border); }
+  .dim .name { font-weight: 600; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .dim .val { font-size: 28px; font-weight: 700; margin-top: 4px; line-height: 1; }
+  .dim.high .val   { color: var(--green); }
+  .dim.mid .val    { color: var(--yellow); }
+  .dim.low .val    { color: var(--red); }
+  .dim .detail { color: var(--muted); font-size: 12px; margin-top: 8px; line-height: 1.4; }
+
+  /* sections */
+  .section { padding: 20px; border-radius: 8px; margin-bottom: 16px;
+             border: 1px solid var(--border); background: var(--card); }
+  .section h3 { margin: 0 0 12px 0; font-size: 14px; color: var(--muted);
+                text-transform: uppercase; letter-spacing: 0.5px; }
+  .flags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .flag { padding: 4px 10px; background: rgba(210,153,34,0.15); border: 1px solid var(--yellow);
+          border-radius: 99px; font-size: 12px; color: var(--yellow); font-family: var(--mono); }
+  .ex-row { padding: 8px 0; border-bottom: 1px solid var(--border); font-family: var(--mono);
+            font-size: 13px; display: flex; justify-content: space-between; }
+  .ex-row:last-child { border-bottom: 0; }
+  .ex-row .reason { color: var(--red); }
+
+  /* re-verify panel — calls out client-side computation */
+  .reverify { padding: 16px; border-radius: 8px; margin-bottom: 16px;
+              background: rgba(63,185,80,0.06); border: 1px solid var(--green); }
+  .reverify .label { color: var(--green); font-weight: 600; }
+  .reverify .body { color: var(--muted); font-size: 13px; margin-top: 6px; }
+
+  details { margin-top: 8px; }
+  summary { cursor: pointer; color: var(--muted); }
+  pre { background: var(--bg); padding: 12px; border-radius: 6px; overflow-x: auto;
+        font-family: var(--mono); font-size: 11px; max-height: 300px; }
+  .footer { color: var(--muted); margin-top: 48px; font-size: 12px; padding: 24px; text-align: center; }
+  .footer a { color: var(--muted); }
+</style>
+</head>
+<body>
+<header>
+  <div class="inner">
+    <h1>Receipt</h1>
+    <div class="tagline">A minimal standard for verifiable actions.<br>
+    If an agent claims it acted, it should produce a receipt.</div>
+    <div class="axiom">Trust score is not performance. It is verifiability.</div>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <input id="path" placeholder="paste a chain URL or upload a JSONL file" value="">
+    <input type="file" id="file" accept=".jsonl,.json,application/jsonl,application/json"
+           style="flex:0 0 auto;">
+    <button class="primary" onclick="run()">Verify independently →</button>
+  </div>
+  <div id="out"></div>
+</main>
+
+<div class="footer">
+  Spec v0.1 · <a href="https://github.com/bbismm/receipt">github.com/bbismm/receipt</a>
+  · view source on this page to read the verifier
+</div>
+
+<script>
+// ── Receipt v0.1 verifier — runs entirely in your browser ──
+// All hashes recomputed via crypto.subtle.digest('SHA-256') on this page.
+// Server only hosts this static HTML and the JSONL data.
+
+const SCORE_SCHEMA_VERSION = "0.1.1";
+const HASH_PREFIX = "sha256:";
+const GENESIS_PREV = HASH_PREFIX + "0".repeat(64);
+const CANONICAL_KEYS = ["v","schema_version","ts","seq","agent","kind","data","prev_hash"];
+const PERMANENT_ANCHORS_TIER = new Set(["btc_op_return","ethereum","arweave"]);
+const SEMI_PERM_ANCHORS_TIER = new Set(["ipfs"]);
+const SOCIAL_ANCHORS_TIER = new Set(["twitter","moltbook","github_commit"]);
+const REALTIME_TIERS = new Set(["exchange_realtime","exchange_delayed","api_verified"]);
+const HEARTBEAT_BUCKET_MS = 5*60*1000;
+const DEFAULT_WINDOW_MS = 7*24*3600*1000;
+function anchorTier(kind) {
+  if (PERMANENT_ANCHORS_TIER.has(kind)) return "permanent";
+  if (SEMI_PERM_ANCHORS_TIER.has(kind)) return "semi_permanent";
+  if (SOCIAL_ANCHORS_TIER.has(kind)) return "social";
+  return "unknown";
+}
+
+async function sha256hex(text) {
+  const buf = new TextEncoder().encode(text);
+  const hash = await crypto.subtle.digest("SHA-256", buf);
+  return [...new Uint8Array(hash)].map(b => b.toString(16).padStart(2,"0")).join("");
+}
+function jsonCanonical(v) {
+  if (v === null) return "null";
+  if (typeof v === "boolean") return v ? "true" : "false";
+  if (typeof v === "number") return JSON.stringify(v);
+  if (typeof v === "string") return JSON.stringify(v);
+  if (Array.isArray(v)) return "[" + v.map(jsonCanonical).join(",") + "]";
+  return "{" + Object.keys(v).sort().map(k => JSON.stringify(k)+":"+jsonCanonical(v[k])).join(",") + "}";
+}
+function canonical(ev) {
+  const body = {};
+  for (const k of CANONICAL_KEYS) if (k in ev) body[k] = ev[k];
+  return jsonCanonical(body);
+}
+
+async function verifyChain(events) {
+  if (events.length === 0) return {status:"EMPTY", n_events:0, n_claims:0, n_verified:0, n_errors:0, issues:[]};
+  let prev = GENESIS_PREV, expectedSeq = 0;
+  const claims=new Set(), verified=new Set(), errors=new Set(), suspect=new Set();
+  let lastReconTs=null, lastEventTs=null;
+  const issues = [];
+  for (const ev of events) {
+    if (ev.seq !== expectedSeq) return fail("seq gap at " + expectedSeq);
+    if (ev.prev_hash !== prev) return fail("prev_hash mismatch at seq " + expectedSeq);
+    const recomputed = HASH_PREFIX + await sha256hex(canonical(ev));
+    if (ev.hash !== recomputed) return fail("hash mismatch at seq " + expectedSeq);
+    const d = ev.data || {};
+    if (ev.kind === "claim") claims.add(ev.seq);
+    else if (ev.kind === "verified") {
+      if (d.claim_seq != null) verified.add(d.claim_seq);
+      if (!(d.match || {}).id_match) suspect.add(ev.seq);
+    } else if (ev.kind === "error") { if (d.claim_seq != null) errors.add(d.claim_seq); }
+    else if (ev.kind === "reconciliation") lastReconTs = ev.ts;
+    lastEventTs = ev.ts; prev = ev.hash; expectedSeq++;
+  }
+  function fail(msg) { issues.push(msg); return {status:"INVALID_CHAIN", n_events:events.length, n_claims:0, n_verified:0, n_errors:0, issues}; }
+  return {
+    status: "OK",
+    n_events: events.length, n_claims: claims.size,
+    n_verified: [...claims].filter(c => verified.has(c)).length,
+    n_errors: errors.size,
+    issues,
+  };
+}
+
+function trustTierMajority(events) {
+  const counts = {};
+  for (const e of events) {
+    if (e.kind === "verified" || e.kind === "reconciliation") {
+      const t = (e.data||{}).trust_tier;
+      if (t) counts[t] = (counts[t]||0)+1;
+    }
+  }
+  if (Object.keys(counts).length === 0) return "manual";
+  return Object.entries(counts).sort((a,b)=>b[1]-a[1])[0][0];
+}
+
+function computeScore(events, report) {
+  if (events.length === 0) return {verdict:"Unverified", verdict_color:"red", score:0, dimensions:{}, summary:{}, flags:["empty"], examples:{mismatch:[],missing_receipts:[]}};
+  if (report.status === "INVALID_CHAIN") return {verdict:"Unverified", verdict_color:"red", score:0, dimensions:{Integrity:{score:0,detail:"hash chain broken"}}, summary:{}, flags:["invalid_chain"], examples:{mismatch:[],missing_receipts:[]}};
+
+  // Coverage
+  const claims = new Set(events.filter(e=>e.kind==="claim").map(e=>e.seq));
+  const terminated = new Set();
+  for (const e of events) {
+    const cs = (e.data||{}).claim_seq;
+    if ((e.kind==="verified"||e.kind==="error") && cs!=null) terminated.add(cs);
+    else if (e.kind==="signal_rejected") terminated.add(e.seq);
+  }
+  const covered = [...claims].filter(c=>terminated.has(c)).length;
+  const coverage = claims.size === 0 ? 1 : covered / claims.size;
+  const cov_score = +(coverage * 100).toFixed(1);
+  const cov_detail = `${covered}/${claims.size||0} claims have receipts`;
+
+  // Accuracy
+  const verifs = events.filter(e=>e.kind==="verified");
+  const verified_ok = verifs.filter(e => (e.data.match||{}).id_match).length;
+  const receipts = verifs.length;
+  const mismatches = receipts - verified_ok;
+  const mismatch_rate = receipts ? mismatches / receipts : 0;
+  const accuracy_raw = receipts ? verified_ok / receipts : 1;
+  const acc_score = +Math.max(0, Math.min(100, (accuracy_raw - mismatch_rate*2)*100)).toFixed(1);
+  const acc_detail = receipts ? `${verified_ok}/${receipts} verified, ${mismatches} mismatch${mismatches!==1?'es':''}` : "no verified events";
+
+  // Consistency — bucket coverage over EXTERNAL window (default last 7d
+  // from chain head). Per SPEC §2.3 the window must NOT come from the chain.
+  const last = events[events.length-1].ts;
+  const windowEnd = last;
+  const windowStart = windowEnd - DEFAULT_WINDOW_MS;
+  const span = Math.max(windowEnd - windowStart, HEARTBEAT_BUCKET_MS);
+  const totalBuckets = Math.max(1, Math.floor(span/HEARTBEAT_BUCKET_MS));
+  const buckets = new Set();
+  for (const e of events) {
+    const b = Math.floor((e.ts - windowStart) / HEARTBEAT_BUCKET_MS);
+    if (b >= 0 && b < totalBuckets) buckets.add(b);
+  }
+  const cons_ratio = buckets.size / totalBuckets;
+  const cons_score = +Math.min(cons_ratio*100, 100).toFixed(1);
+  const cons_detail = `covered ${buckets.size}/${totalBuckets} 5-min buckets in ${(span/3600000).toFixed(0)}h window`;
+
+  // Transparency
+  let trans_score = 100;
+  const trans_notes = [];
+  if (!events.some(e=>e.kind==="error")) { trans_score -= 20; trans_notes.push("−20 no error events (real systems fail)"); }
+  if (!events.some(e=>e.kind==="reconciliation")) { trans_score -= 30; trans_notes.push("−30 no reconciliation event"); }
+  const allHaveTol = verifs.every(e => ((e.data.match||{}).tolerance_used) != null);
+  if (!allHaveTol) { trans_score -= 20; trans_notes.push("−20 missing match.tolerance_used"); }
+  trans_score = Math.max(0, trans_score);
+  const trans_detail = trans_notes.length ? trans_notes.join("; ") : "all transparency criteria met";
+
+  // Integrity — explicit anchor tiering (SPEC §2.5)
+  const anchors = events.filter(e=>e.kind==="anchor");
+  let int_score = 100, int_detail = "chain valid", anchorMeta = {tier: null};
+  if (anchors.length === 0) { int_score = 50; int_detail = "no anchor event"; anchorMeta.tier = null; }
+  else {
+    const a = anchors[anchors.length-1];
+    const kind = a.data.anchor_kind || "";
+    const tier = anchorTier(kind);
+    anchorMeta.tier = tier; anchorMeta.kind = kind;
+    const ageH = (last - a.ts)/3600000;
+    const notes = [];
+    if (tier === "social") { int_score = Math.min(int_score, 90); notes.push(`social tier (${kind}) capped 90`); }
+    else if (tier === "semi_permanent") { int_score = Math.min(int_score, 95); notes.push(`semi-permanent (${kind}) capped 95`); }
+    else if (tier === "unknown") { int_score = Math.min(int_score, 80); notes.push(`unknown anchor (${kind}) capped 80`); }
+    if (ageH > 24) { int_score -= 30; notes.push(`anchor ${ageH.toFixed(1)}h old (−30)`); }
+    if (ageH > 168) { int_score = Math.min(int_score, 30); notes.push("anchor > 7d cap 30"); }
+    int_score = Math.max(0, Math.min(100, int_score));
+    int_detail = `anchor ${ageH.toFixed(1)}h ago on ${kind} [tier=${tier}]` + (notes.length ? "; " + notes.join("; ") : "");
+  }
+
+  const dims = {
+    Coverage:     {score: cov_score,   detail: cov_detail},
+    Accuracy:     {score: acc_score,   detail: acc_detail},
+    Consistency:  {score: cons_score,  detail: cons_detail},
+    Transparency: {score: trans_score, detail: trans_detail},
+    Integrity:    {score: int_score,   detail: int_detail},
+  };
+  const raw = Math.round((cov_score+acc_score+cons_score+trans_score+int_score)/5);
+
+  // Verdict
+  const tierMaj = trustTierMajority(events);
+  const hasAnchor = anchors.length > 0;
+  const hasRecon = events.some(e=>e.kind==="reconciliation");
+  const anchorRecent = hasAnchor && (last - anchors[anchors.length-1].ts) <= 24*3600000;
+  let verdict, color;
+  if (coverage >= 0.9 && accuracy_raw >= 0.8 && mismatch_rate <= 0.05
+      && hasAnchor && hasRecon && anchorRecent && REALTIME_TIERS.has(tierMaj)) {
+    verdict = "Verified"; color = "green";
+  } else if (coverage < 0.5 || mismatch_rate > 0.20 || !hasAnchor || cons_score < 30 || tierMaj === "manual") {
+    verdict = "Unverified"; color = "red";
+  } else {
+    verdict = "Mixed"; color = "yellow";
+  }
+
+  // Enforce verdict ↔ score consistency (SPEC §4)
+  let score = raw;
+  if (verdict === "Verified" && score < 75) score = 75;
+  if (verdict === "Unverified" && score >= 40) score = 39;
+  if (verdict === "Mixed") score = Math.max(40, Math.min(74, score));
+
+  // Flags
+  const flags = [];
+  if (mismatches > 0) flags.push(`${mismatches}_mismatches`);
+  const errCount = events.filter(e=>e.kind==="error").length;
+  if (errCount) flags.push(`${errCount}_error_events`);
+  if (cons_score < 60) flags.push("missing_heartbeat_periods");
+  if (anchors.length === 0) flags.push("no_anchor");
+  else if ((last - anchors[anchors.length-1].ts)/3600000 > 24) flags.push("anchor_stale");
+  if (tierMaj === "backfill_local") flags.push("backfill_only_evidence");
+  if (tierMaj === "manual") flags.push("manual_attested_only");
+
+  // Examples
+  const exMismatch = [];
+  const exMissing = [];
+  for (const e of verifs) {
+    const m = e.data.match || {};
+    if (!m.id_match) exMismatch.push({seq:e.seq, reason:"id_not_matched"});
+    else if (m.price_match === false) exMismatch.push({seq:e.seq, reason:"price_out_of_tolerance"});
+    else if (m.size === false) exMismatch.push({seq:e.seq, reason:"size_mismatch"});
+  }
+  for (const c of [...claims].filter(c=>!terminated.has(c)).slice(0,5)) exMissing.push({seq:c});
+
+  // Suspicion flags (SPEC §2.6) — additive, do NOT affect score
+  const suspicion = [];
+  if (claims.size >= 20 && errCount === 0) suspicion.push("no_error_events");
+  if (DEFAULT_WINDOW_MS > 24*3600000) {
+    let maxGap = 0;
+    for (let i=1; i<events.length; i++) maxGap = Math.max(maxGap, (events[i].ts - events[i-1].ts)/3600000);
+    if (maxGap > 24) suspicion.push("sudden_activity_gap");
+  }
+  if (verifs.length >= 10) {
+    for (let i=0; i<=verifs.length-10; i++) {
+      const win = verifs.slice(i, i+10);
+      const mm = win.filter(e => !((e.data.match||{}).id_match)).length;
+      if (mm >= 3) { suspicion.push("mismatch_cluster"); break; }
+    }
+  }
+  const tierCounts = {};
+  for (const e of events) {
+    const t = (e.data||{}).trust_tier;
+    if (t) tierCounts[t] = (tierCounts[t]||0)+1;
+  }
+  const bf = tierCounts.backfill_local||0, rt = tierCounts.exchange_realtime||0;
+  if (bf > 0 && rt > 0 && bf > rt*5) suspicion.push("backfill_dominant_pretending_realtime");
+  if (anchors.length > 0 && anchors.every(a => anchorTier(a.data.anchor_kind||"") === "social")) suspicion.push("only_social_anchor");
+  if (DEFAULT_WINDOW_MS > 24*3600000 && !events.some(e=>e.kind==="heartbeat")) suspicion.push("heartbeat_silence");
+
+  return {
+    schema_version: SCORE_SCHEMA_VERSION,
+    window: {from_ms: windowStart, to_ms: windowEnd, source: "default_last_7d"},
+    verdict, verdict_color: color, score, raw_score_pre_clamp: raw,
+    trust_tier_majority: tierMaj,
+    dimensions: dims,
+    summary: {total_claims: claims.size, receipts, verified: verified_ok, mismatch: mismatches, errors: errCount},
+    rule_breaks: flags,
+    suspicion_flags: suspicion,
+    examples: {mismatch: exMismatch.slice(0,5), missing_receipts: exMissing},
+    computed_at_ms: Date.now(),
+  };
+}
+
+async function run() {
+  const file = document.getElementById("file").files[0];
+  const url = document.getElementById("path").value.trim();
+  let text;
+  try {
+    if (file) text = await file.text();
+    else if (url) { const r = await fetch(url); text = await r.text(); }
+    else { setOut("<div class='section'>Paste a URL or upload a JSONL file.</div>"); return; }
+  } catch (e) { setOut(`<div class='section'>Fetch failed: ${e.message}</div>`); return; }
+  let events;
+  try { events = text.split("\n").filter(l=>l.trim()).map(l=>JSON.parse(l)); }
+  catch (e) { setOut(`<div class='section'>Not valid JSONL: ${e.message}</div>`); return; }
+  const t0 = performance.now();
+  const report = await verifyChain(events);
+  const score = computeScore(events, report);
+  const elapsedMs = Math.round(performance.now() - t0);
+  render(events, report, score, elapsedMs);
+}
+
+function setOut(html) { document.getElementById("out").innerHTML = html; }
+
+function dimClass(v) { return v >= 80 ? "high" : v >= 50 ? "mid" : "low"; }
+function dimSign(v) { return v >= 80 ? "✓" : v >= 50 ? "~" : "!"; }
+
+function render(events, report, score, elapsedMs) {
+  const v = score.verdict, color = score.verdict_color;
+  const icon = v === "Verified" ? "✅" : v === "Mixed" ? "⚠️" : "❌";
+  let html = "";
+
+  // Verdict block — biggest visual element
+  html += `<div class="verdict-block ${color}">
+    <div class="verdict-icon">${icon}</div>
+    <div class="verdict-label">${v}</div>
+    <div class="score-line">Trust Score: <strong>${score.score}</strong> / 100${
+      score.raw_score_pre_clamp !== score.score ? ` <span style="color:var(--muted);font-size:14px;">(unclamped: ${score.raw_score_pre_clamp})</span>` : ""
+    }</div>
+    <div class="verdict-meta">${(events[0]?.agent || "unknown agent")} ·
+      ${events.length} events ·
+      tier majority: ${score.trust_tier_majority || "—"}</div>
+  </div>`;
+
+  // Re-verify affordance
+  html += `<div class="reverify">
+    <div class="label">🔒 Verified locally in your browser (${elapsedMs}ms)</div>
+    <div class="body">All ${report.n_events} event hashes were recomputed via <code>crypto.subtle.digest('SHA-256')</code>
+      on this page — no server, no API call. Right-click → View Source to read the verifier.</div>
+  </div>`;
+
+  // 5-dim breakdown
+  html += `<div class="section"><h3>Score breakdown</h3><div class="dims">`;
+  for (const [name, d] of Object.entries(score.dimensions)) {
+    html += `<div class="dim ${dimClass(d.score)}">
+      <div class="name">${name}</div>
+      <div class="val">${d.score}</div>
+      <div class="detail">${d.detail}</div>
+    </div>`;
+  }
+  html += `</div></div>`;
+
+  // Rule breaks (things that contributed to score deductions)
+  if (score.rule_breaks && score.rule_breaks.length) {
+    html += `<div class="section"><h3>Rule breaks</h3><div class="flags">`;
+    for (const f of score.rule_breaks) html += `<span class="flag">${f}</span>`;
+    html += `</div></div>`;
+  }
+
+  // Suspicion flags — separate from score, human-intuition layer (SPEC §2.6)
+  if (score.suspicion_flags && score.suspicion_flags.length) {
+    html += `<div class="section" style="border-color:var(--orange);">
+      <h3 style="color:var(--orange);">⚠ Suspicion (does NOT affect score, but worth your attention)</h3>
+      <div class="flags">`;
+    for (const f of score.suspicion_flags) {
+      html += `<span class="flag" style="border-color:var(--orange);background:rgba(219,109,40,0.15);color:var(--orange);">${f}</span>`;
+    }
+    html += `</div></div>`;
+  }
+
+  // Concrete examples
+  if (score.examples.mismatch.length || score.examples.missing_receipts.length) {
+    html += `<div class="section"><h3>Concrete issues</h3>`;
+    if (score.examples.mismatch.length) {
+      html += `<div style="margin-bottom:12px;color:var(--muted);font-size:12px;">Mismatches:</div>`;
+      for (const m of score.examples.mismatch) html += `<div class="ex-row"><span>seq ${m.seq}</span><span class="reason">${m.reason}</span></div>`;
+    }
+    if (score.examples.missing_receipts.length) {
+      html += `<div style="margin:12px 0 6px 0;color:var(--muted);font-size:12px;">Missing receipts:</div>`;
+      for (const m of score.examples.missing_receipts) html += `<div class="ex-row"><span>seq ${m.seq}</span><span class="reason">no terminating event</span></div>`;
+    }
+    html += `</div>`;
+  }
+
+  // Drill-down
+  html += `<div class="section"><h3>Chain summary</h3>`;
+  html += `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;">`;
+  for (const [k,v] of Object.entries(score.summary)) html += `<div><div style="color:var(--muted);font-size:12px;">${k}</div><div style="font-size:20px;font-weight:600;">${v}</div></div>`;
+  html += `</div>`;
+  html += `<details><summary>last 5 events</summary><pre>${events.slice(-5).map(e=>JSON.stringify(e)).join("\n")}</pre></details>`;
+  html += `</div>`;
+
+  setOut(html);
+}
+</script>
+</body>
+</html>

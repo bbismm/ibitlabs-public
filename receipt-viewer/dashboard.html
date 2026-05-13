@@ -1,0 +1,734 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Activity Ledger</title>
+<style>
+  :root {
+    --bg: #faf7f1;
+    --fg: #1f1f23;
+    --muted: #6b6b73;
+    --card: #ffffff;
+    --border: #e7e2d6;
+    --green: #2c8a4a;
+    --green-soft: #e8f3ec;
+    --yellow: #c98a16;
+    --yellow-soft: #f7eed8;
+    --red: #b53939;
+    --red-soft: #f4e0e0;
+    --blue: #2c5aa0;
+    --mono: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1714; --fg: #ede8db; --muted: #8a8579;
+      --card: #25211c; --border: #3a342c;
+      --green: #62b97d; --green-soft: rgba(98,185,125,0.13);
+      --yellow: #e0a73a; --yellow-soft: rgba(224,167,58,0.14);
+      --red: #d97070; --red-soft: rgba(217,112,112,0.14);
+      --blue: #7aa4d6;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg);
+         font: 15px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI",
+              "Helvetica Neue", sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 32px 22px 80px; }
+  h1 { margin: 0 0 6px 0; font-size: 26px; font-weight: 600; letter-spacing: -0.3px; }
+  .sub { color: var(--muted); margin-bottom: 32px; font-size: 14px; }
+  .sub a { color: var(--blue); text-decoration: none; }
+  .sub a:hover { text-decoration: underline; }
+
+  .controls { display: flex; gap: 10px; margin-bottom: 24px; align-items: center; flex-wrap: wrap; }
+  .controls input { flex: 1; min-width: 200px; padding: 9px 12px; border-radius: 8px;
+                    border: 1px solid var(--border); background: var(--card); color: var(--fg);
+                    font: 13px var(--mono); }
+  .controls button { padding: 9px 16px; border-radius: 8px; border: 1px solid var(--border);
+                     background: var(--card); color: var(--fg); cursor: pointer; font: inherit; }
+  .controls button.primary { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+
+  .verdict { padding: 28px 24px; border-radius: 14px; margin-bottom: 18px;
+             border: 1px solid var(--border); background: var(--card); }
+  .verdict.green  { background: var(--green-soft);  border-color: var(--green); }
+  .verdict.yellow { background: var(--yellow-soft); border-color: var(--yellow); }
+  .verdict.red    { background: var(--red-soft);    border-color: var(--red); }
+  .verdict .icon { font-size: 36px; line-height: 1; margin-bottom: 8px; }
+  .verdict .headline { font-size: 22px; font-weight: 600; letter-spacing: -0.2px; margin-bottom: 8px; }
+  .verdict.green  .headline { color: var(--green); }
+  .verdict.yellow .headline { color: var(--yellow); }
+  .verdict.red    .headline { color: var(--red); }
+  .verdict .why { color: var(--fg); opacity: 0.85; font-size: 14px; line-height: 1.6; }
+  .verdict .score { margin-top: 14px; font-size: 13px; color: var(--muted); }
+  .verdict .score b { color: var(--fg); font-size: 18px; font-weight: 700; }
+
+  .agent { padding: 16px 20px; border-radius: 10px; margin-bottom: 18px;
+           background: var(--card); border: 1px solid var(--border); }
+  .agent .label { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .agent .name { font-size: 16px; font-weight: 600; }
+  .agent .raw { margin-top: 6px; font: 12px var(--mono); color: var(--muted); }
+
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+           gap: 10px; margin-bottom: 22px; }
+  .stat { background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+          padding: 14px 16px; }
+  .stat .v { font-size: 26px; font-weight: 700; line-height: 1; }
+  .stat .k { color: var(--muted); font-size: 12px; margin-top: 6px; }
+
+  .section { margin-bottom: 26px; }
+  .section h2 { font-size: 13px; color: var(--muted); text-transform: uppercase;
+                letter-spacing: 0.6px; margin: 0 0 10px 0; font-weight: 600; }
+  .events { background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+            overflow: hidden; }
+  .event { display: grid; grid-template-columns: 38px 1fr auto;
+           gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  .event:last-child { border-bottom: 0; }
+  .event .e-icon { font-size: 18px; line-height: 1.4; }
+  .event .e-body { font-size: 14px; }
+  .event .e-body .what { color: var(--fg); }
+  .event .e-body .extra { color: var(--muted); font-size: 12px; margin-top: 2px; }
+  .event .e-time { color: var(--muted); font: 12px var(--mono); white-space: nowrap; padding-top: 2px; }
+  .event.ok    { background: var(--green-soft); }
+  .event.warn  { background: var(--yellow-soft); }
+  .event.fail  { background: var(--red-soft); }
+
+  .dims { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+          gap: 10px; }
+  .dim { background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+         padding: 14px 16px; }
+  .dim .dim-head { display: flex; justify-content: space-between; align-items: baseline;
+                   margin-bottom: 4px; }
+  .dim .dim-name { font-weight: 600; font-size: 14px; }
+  .dim .dim-score { font: 18px var(--mono); font-weight: 700; }
+  .dim.high .dim-score { color: var(--green); }
+  .dim.mid  .dim-score { color: var(--yellow); }
+  .dim.low  .dim-score { color: var(--red); }
+  .dim .dim-q { color: var(--muted); font-size: 12px; margin: 2px 0 6px 0; }
+  .dim .dim-fix { color: var(--muted); font-size: 12px; margin-top: 6px; line-height: 1.5; }
+
+  .alerts { padding: 14px 18px; border-radius: 10px; background: var(--yellow-soft);
+            border: 1px solid var(--yellow); margin-bottom: 18px; }
+  .alerts .a-head { font-weight: 600; color: var(--yellow); font-size: 13px; margin-bottom: 6px; }
+  .alerts ul { margin: 0; padding-left: 20px; }
+  .alerts li { font-size: 13px; line-height: 1.6; }
+
+  details { margin-top: 14px; }
+  details summary { cursor: pointer; color: var(--muted); font-size: 13px; padding: 6px 0; }
+  details summary:hover { color: var(--fg); }
+  details pre { background: var(--bg); border: 1px solid var(--border); padding: 12px;
+                border-radius: 8px; overflow-x: auto; font: 11px var(--mono);
+                max-height: 300px; }
+  details .meta-tbl { font-size: 12px; }
+  details .meta-tbl td { padding: 4px 12px 4px 0; }
+  details .meta-tbl td:first-child { color: var(--muted); }
+  details .meta-tbl td:nth-child(2) { font-family: var(--mono); }
+
+  .foot { color: var(--muted); font-size: 12px; margin-top: 36px; text-align: center;
+          line-height: 1.7; }
+  .foot a { color: var(--muted); }
+
+  .crypto-badge { display: inline-block; font-size: 11px; padding: 3px 8px;
+                  border: 1px solid var(--green); color: var(--green); border-radius: 99px;
+                  background: var(--green-soft); margin-left: 8px; vertical-align: middle; }
+
+  .loading { padding: 40px; text-align: center; color: var(--muted); }
+  .err { padding: 18px; border-radius: 10px; background: var(--red-soft); border: 1px solid var(--red);
+         color: var(--red); }
+</style>
+</head>
+<body>
+<main>
+  <h1>AI Activity Ledger</h1>
+  <div class="sub">
+    Every entry is a working log the AI wrote about itself, cryptographically
+    chained together. Anyone — including you, right now — can verify it
+    independently.
+    <span class="crypto-badge">verified in your browser</span>
+  </div>
+
+  <div class="controls">
+    <input id="path" placeholder="Leave blank to load the default chain — or paste a URL to a .jsonl file" value="">
+    <input type="file" id="file" accept=".jsonl,.json" style="flex:0 0 auto;">
+    <button class="primary" onclick="loadAndRender()">Read it</button>
+  </div>
+
+  <div id="out" class="loading">Loading default chain (shadow-chain.jsonl)…</div>
+</main>
+
+<div class="foot">
+  Receipt v0.1 spec · <a href="https://github.com/bbismm/receipt" target="_blank">github.com/bbismm/receipt</a><br>
+  Watching multiple agents at once? Use the <a href="./monitor.html">multi-agent monitor</a>. ·
+  Auditors / developers: see the <a href="./index.html">technical verifier</a> (raw fields, hash recompute, suspicion flags).<br>
+  No remote API calls happen on this page. Right-click → View Source to read the full logic.
+</div>
+
+<script>
+// ── Default chain to load ──
+const DEFAULT_CHAIN_PATH = "shadow-chain.jsonl";
+
+// ── Known-agent translations ──
+const AGENT_TRANSLATIONS = {
+  "iBitLabs/sniper-v5.1-shadow":    { who: "iBitLabs · SOL perp · shadow experiment (paper account)", note: "Runs the same strategy as the live account with no real money. Used for A/B comparison." },
+  "iBitLabs/sniper-v5.1-live":      { who: "iBitLabs · SOL perp · live ($1k → $10k experiment)", note: "Real account. iBitLabs's flagship public experiment." },
+  "iBitLabs/sniper-v5.1-eth_paper": { who: "iBitLabs · ETH perp · paper experiment", note: "ETH signal research, paper account." },
+  "iBitLabs/sniper-v5.1":           { who: "iBitLabs · SOL perp · live (legacy agent id, pre Phase A.1)", note: "" },
+  "iBitLabs/rule-engine-v0.1":      { who: "iBitLabs · Rule engine (v0.1)", note: "Earlier version of the rule engine. v0.2 has stateful absence matching + auto-heal." },
+  "iBitLabs/rule-engine-v0.2":      { who: "iBitLabs · Rule engine", note: "Watches other agents' receipt chains and fires actions (ntfy / shell / iMessage) on rule matches. v0.2 supports stateful absence patterns (auto-anchor / auto-reconcile when chain goes stale) and a safety gate (`auto: True`) for shell actions. Emits its own chain so the auto-heal layer is itself auditable." },
+  "example/code-writing-agent-v0.1":{ who: "Demo · code-writing AI", note: "Sample chain showing how Receipt records what a coding agent edited, whether the edit matched its stated intent, and whether it silently touched anything else." },
+};
+
+// ── Event-kind translations (polymorphic — handle both trading and code-AI shapes) ──
+const KIND_TEMPLATES = {
+  heartbeat: {
+    icon: "💗",
+    klass: "",
+    render: (d) => ({
+      what: `Pulse — ${d.status === "scanning" ? "scanning for signals" : (d.status || "alive")}`,
+      extra: d.latency_ms != null ? `${d.latency_ms} ms latency` : ""
+    })
+  },
+  claim: {
+    icon: "🎯",
+    klass: "",
+    render: (d) => {
+      // Code-writing AI claim shape
+      if (d.target_file || d.intent) {
+        return {
+          what: `Plans to ${d.action || "edit"} ${d.target_file || "(unspecified file)"}` +
+                (d.intent ? ` — ${d.intent}` : ""),
+          extra: d.repo ? `repo: ${d.repo}` : (d.user_prompt_hash ? "user prompt hashed for anti-drift check" : "")
+        };
+      }
+      // Trading claim shape
+      return {
+        what: `Plans to ${actionEn(d.action)} ${d.symbol || ""}` +
+              (d.size != null ? ` (${d.size} contracts)` : "") +
+              (d.price_intended != null ? ` at $${d.price_intended}` : ""),
+        extra: (d.reasoning && d.reasoning[0]) || d.reason || ""
+      };
+    }
+  },
+  external_action: {
+    icon: "📤",
+    klass: "",
+    render: (d) => {
+      const req = d.request || {};
+      const res = d.response || {};
+      // Code-writing AI: filesystem write
+      if (d.venue === "filesystem") {
+        return {
+          what: `Wrote ${req.path || "(file)"}${res.bytes_written != null ? ` — ${res.bytes_written} bytes` : ""}`,
+          extra: req.pre_edit_hash ? `pre-edit hash recorded` : ""
+        };
+      }
+      // Code-writing AI: subprocess (build / test / lint)
+      if (d.venue === "subprocess") {
+        const ok = res.status === 0;
+        return {
+          what: `Ran ${req.command || req.operation || "(command)"} — exit ${res.status}`,
+          extra: ok ? "" : (res.stderr || "non-zero exit").toString().slice(0, 80)
+        };
+      }
+      // Trading: API call
+      return {
+        what: `Sent ${req.method || "request"} to ${d.venue || "external"}` +
+              (req.endpoint ? ` (${req.endpoint})` : ""),
+        extra: res.status != null ? `response ${res.status}` : ""
+      };
+    }
+  },
+  verified: {
+    icon: "✅",
+    klass: "ok",
+    render: (d) => {
+      const m = d.match || {};
+      const idOK = m.id_match !== false;
+      const sizeOK = m.size !== false;
+      const priceOK = m.price_match !== false;
+      const allOK = idOK && sizeOK && priceOK;
+      const failedFields = [!idOK && "ID didn't match", !sizeOK && "size off", !priceOK && "price out of tolerance"].filter(Boolean).join(" / ");
+
+      // Code-writing AI verified (target is a file path)
+      if (m.symbol && (m.symbol.includes("/") || /\.(py|ts|js|go|rs|java|md|sh|html)$/.test(m.symbol))) {
+        return {
+          what: allOK
+            ? `${d.source || "verifier"} confirmed edit to ${m.symbol}` +
+              (m.lines_added != null ? ` — ${m.lines_added} lines added` : "")
+            : `Edit to ${m.symbol} flagged: ${failedFields}`,
+          extra: d.summary || (allOK ? "claim matches what's on disk" : "needs human review")
+        };
+      }
+      // Trading verified
+      return {
+        what: allOK
+          ? `${d.source || "venue"} confirmed fill` +
+            (d.fill_price != null ? ` at $${d.fill_price}` : "") +
+            (d.filled_size != null ? ` (${d.filled_size} contracts)` : "")
+          : `${d.source || "venue"} returned a fill but reconciliation flagged: ${failedFields}`,
+        extra: allOK ? "local book matches venue record" : "needs human review"
+      };
+    }
+  },
+  error: {
+    icon: "❌",
+    klass: "fail",
+    render: (d) => ({
+      what: `Failure (${d.phase || "?"} phase): ${d.message || d.error_type || "no message"}`,
+      extra: d.claim_seq != null ? `against intent #${d.claim_seq}${d.retryable ? " · retryable" : ""}` : ""
+    })
+  },
+  reconciliation: {
+    icon: "🔍",
+    klass: "ok",
+    render: (d) => {
+      const local = d.local || {};
+      const ext = d.external || {};
+      // Trading: balance check
+      if (local.balance_usd != null && ext.balance_usd != null) {
+        const match = local.balance_usd === ext.balance_usd;
+        return {
+          what: `Balance check ${match ? "passed" : "FAILED"} — local $${local.balance_usd} / venue $${ext.balance_usd}`,
+          extra: match ? "local book matches venue" : "drift detected — investigate"
+        };
+      }
+      // Code-AI: task/file check
+      if (d.matched != null || d.unmatched != null) {
+        return {
+          what: `Task check — ${d.matched || 0} matched, ${d.unmatched || 0} unmatched, ${d.errors || 0} errors`,
+          extra: d.summary || ""
+        };
+      }
+      return { what: `Reconciliation event`, extra: d.summary || "" };
+    }
+  },
+  anchor: {
+    icon: "⚓",
+    klass: "ok",
+    render: (d) => ({
+      what: `Anchored this chain segment to ${anchorEn(d.anchor_kind)}` +
+            (d.anchor_uri ? ` (${shortUri(d.anchor_uri)})` : ""),
+      extra: "anyone modifying the chain after this point can be detected externally"
+    })
+  },
+  signal_rejected: {
+    icon: "🚫",
+    klass: "warn",
+    render: (d) => ({
+      what: `Signal rejected: ${d.rejected_by ? `by ${d.rejected_by} — ` : ""}${d.reason || "(no reason given)"}`,
+      extra: d.would_be_action ? `would-be action: ${d.would_be_action}` : ""
+    })
+  }
+};
+
+function actionEn(a) {
+  return ({"open_long":"go long","open_short":"go short","close":"close position",
+           "close_long":"close long","close_short":"close short","tp":"take profit",
+           "sl":"stop loss","edit_file":"edit","read_file":"read","write_file":"write"})[a] || a || "?";
+}
+function anchorEn(k) {
+  return ({"ipfs":"IPFS (decentralized storage)","btc_op_return":"Bitcoin OP_RETURN",
+           "ethereum":"Ethereum","arweave":"Arweave (permanent storage)",
+           "twitter":"Twitter","moltbook":"Moltbook","github_commit":"GitHub commit"})[k] || k || "(unspecified)";
+}
+function shortUri(u) { return u && u.length > 48 ? u.slice(0, 36) + "…" : u; }
+
+// ── Time formatters ──
+function fmtTime(ms) {
+  if (!ms) return "";
+  const d = new Date(ms);
+  const today = new Date();
+  const isToday = d.toDateString() === today.toDateString();
+  const yesterday = new Date(today); yesterday.setDate(today.getDate() - 1);
+  const isYesterday = d.toDateString() === yesterday.toDateString();
+  const hm = `${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`;
+  if (isToday) return `today ${hm}`;
+  if (isYesterday) return `yesterday ${hm}`;
+  return `${d.getMonth()+1}/${d.getDate()} ${hm}`;
+}
+function fmtAge(ms) {
+  if (!ms) return "—";
+  const ageMin = (Date.now() - ms) / 60000;
+  if (ageMin < 2) return "just now";
+  if (ageMin < 60) return `${Math.floor(ageMin)} min ago`;
+  if (ageMin < 60*24) return `${Math.floor(ageMin/60)} hr ago`;
+  return `${Math.floor(ageMin/60/24)} days ago`;
+}
+
+// ── Loading + rendering ──
+async function loadAndRender() {
+  // Honor ?url=... query param (set by monitor.html cards) on first load
+  const urlParam = new URLSearchParams(window.location.search).get('url');
+  const inputField = document.getElementById("path");
+  if (urlParam && !inputField.value) inputField.value = urlParam;
+
+  const path = inputField.value.trim();
+  const file = document.getElementById("file").files[0];
+  const out = document.getElementById("out");
+  let text;
+  try {
+    if (file) text = await file.text();
+    else {
+      const url = path || DEFAULT_CHAIN_PATH;
+      const r = await fetch(url);
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      text = await r.text();
+    }
+  } catch (e) {
+    out.innerHTML = `<div class="err">Couldn't read the chain file: ${e.message}<br><br>
+      By default this page loads <code>${DEFAULT_CHAIN_PATH}</code> from the local server.
+      To view another chain, paste a URL or use the file picker above to upload a .jsonl file.</div>`;
+    return;
+  }
+  let events;
+  try { events = text.split("\n").filter(l=>l.trim()).map(l=>JSON.parse(l)); }
+  catch (e) { out.innerHTML = `<div class="err">This doesn't look like valid JSONL: ${e.message}</div>`; return; }
+  if (events.length === 0) { out.innerHTML = `<div class="err">The chain is empty — no events to render.</div>`; return; }
+
+  const t0 = performance.now();
+  const verifyReport = await verifyChain(events);
+  const score = computeScore(events, verifyReport);
+  const ms = Math.round(performance.now() - t0);
+  render(events, verifyReport, score, ms);
+}
+
+// ── verify_chain (recompute SHA-256 in-browser) ──
+const HASH_PREFIX = "sha256:";
+const GENESIS_PREV = HASH_PREFIX + "0".repeat(64);
+const CANONICAL_KEYS = ["v","schema_version","ts","seq","agent","kind","data","prev_hash"];
+
+async function sha256hex(text) {
+  const buf = new TextEncoder().encode(text);
+  const hash = await crypto.subtle.digest("SHA-256", buf);
+  return [...new Uint8Array(hash)].map(b => b.toString(16).padStart(2,"0")).join("");
+}
+function jsonCanonical(v) {
+  if (v === null) return "null";
+  if (typeof v === "boolean") return v ? "true" : "false";
+  if (typeof v === "number") return JSON.stringify(v);
+  if (typeof v === "string") return JSON.stringify(v);
+  if (Array.isArray(v)) return "[" + v.map(jsonCanonical).join(",") + "]";
+  return "{" + Object.keys(v).sort().map(k => JSON.stringify(k)+":"+jsonCanonical(v[k])).join(",") + "}";
+}
+function canonical(ev) {
+  const body = {};
+  for (const k of CANONICAL_KEYS) if (k in ev) body[k] = ev[k];
+  return jsonCanonical(body);
+}
+async function verifyChain(events) {
+  let prev = GENESIS_PREV, expected = 0;
+  for (const ev of events) {
+    if (ev.seq !== expected) return { status: "BROKEN", issue: `sequence gap — expected ${expected}, got ${ev.seq}` };
+    if (ev.prev_hash !== prev) return { status: "BROKEN", issue: `at seq ${expected}, prev_hash doesn't match the previous event's hash` };
+    const recomputed = HASH_PREFIX + await sha256hex(canonical(ev));
+    if (ev.hash !== recomputed) return { status: "BROKEN", issue: `at seq ${expected}, recomputed hash doesn't match — this event was modified after being written` };
+    prev = ev.hash; expected++;
+  }
+  return { status: "OK" };
+}
+
+// ── score (simplified 5-dim with plain-English labels) ──
+const REALTIME_TIERS = new Set(["exchange_realtime","exchange_delayed","api_verified"]);
+const HEARTBEAT_BUCKET_MS = 5*60*1000;
+const DEFAULT_WINDOW_MS = 7*24*3600*1000;
+const PERM_ANCHORS = new Set(["btc_op_return","ethereum","arweave"]);
+
+function computeScore(events, report) {
+  if (events.length === 0) return null;
+  if (report.status === "BROKEN") {
+    return { verdict: "BROKEN", verdictColor: "red", issue: report.issue };
+  }
+
+  const claims = new Set(events.filter(e=>e.kind==="claim").map(e=>e.seq));
+  const terminated = new Set();
+  for (const e of events) {
+    const cs = (e.data||{}).claim_seq;
+    if ((e.kind==="verified"||e.kind==="error") && cs!=null) terminated.add(cs);
+  }
+  const covered = [...claims].filter(c=>terminated.has(c)).length;
+  const coverage = claims.size === 0 ? null : covered / claims.size;
+
+  const verifs = events.filter(e=>e.kind==="verified");
+  const verified_ok = verifs.filter(e => ((e.data.match||{}).id_match !== false)).length;
+  const mismatches = verifs.length - verified_ok;
+  const accuracy = verifs.length ? verified_ok / verifs.length : null;
+
+  const last = events[events.length-1].ts;
+  const windowStart = last - DEFAULT_WINDOW_MS;
+  const span = Math.max(last - windowStart, HEARTBEAT_BUCKET_MS);
+  const totalBuckets = Math.max(1, Math.floor(span/HEARTBEAT_BUCKET_MS));
+  const buckets = new Set();
+  for (const e of events) {
+    const b = Math.floor((e.ts - windowStart) / HEARTBEAT_BUCKET_MS);
+    if (b >= 0 && b < totalBuckets) buckets.add(b);
+  }
+  const consistency = buckets.size / totalBuckets;
+
+  const hasError = events.some(e=>e.kind==="error");
+  const hasRecon = events.some(e=>e.kind==="reconciliation");
+  const verifsAllTol = verifs.length === 0 || verifs.every(e => ((e.data.match||{}).tolerance_used) != null);
+  let transparency_pts = 0;
+  if (hasError) transparency_pts += 33;
+  if (hasRecon) transparency_pts += 34;
+  if (verifsAllTol) transparency_pts += 33;
+
+  const anchors = events.filter(e=>e.kind==="anchor");
+  let integrity_pts = 0;
+  if (anchors.length === 0) integrity_pts = 50;
+  else {
+    const a = anchors[anchors.length-1];
+    const ageH = (last - a.ts)/3600000;
+    if (PERM_ANCHORS.has(a.data.anchor_kind)) integrity_pts = 100;
+    else if (a.data.anchor_kind === "ipfs") integrity_pts = 95;
+    else integrity_pts = 80;
+    if (ageH > 24)  integrity_pts -= 30;
+    if (ageH > 168) integrity_pts = Math.min(integrity_pts, 30);
+    integrity_pts = Math.max(0, Math.min(100, integrity_pts));
+  }
+
+  const cov_pts = coverage === null ? 0 : Math.round(coverage * 100);
+  const acc_pts = accuracy === null ? 0 : Math.round(accuracy * 100);
+  const cons_pts = Math.round(Math.min(1, consistency) * 100);
+  const raw = Math.round((cov_pts + acc_pts + cons_pts + transparency_pts + integrity_pts) / 5);
+
+  // tier majority
+  const tierCounts = {};
+  for (const e of events) {
+    const t = (e.data || {}).trust_tier;
+    if (t) tierCounts[t] = (tierCounts[t]||0)+1;
+  }
+  const tierMaj = Object.entries(tierCounts).sort((a,b)=>b[1]-a[1])[0]?.[0] || "manual";
+
+  let verdict, verdictColor, headline, why;
+  const hasClaim = claims.size > 0;
+
+  if (!hasClaim) {
+    verdict = "WAITING";
+    verdictColor = "yellow";
+    headline = "The chain has heartbeats but no claims yet";
+    why = "What we can confirm right now: this AI is checking in regularly. But it hasn't taken any stated actions yet — once it does, you'll see a full claim → external_action → verified sequence appear here. The trust score is naturally low for now because there's nothing concrete to verify yet.";
+  } else if (coverage >= 0.9 && (accuracy === null || accuracy >= 0.8) && (mismatches/verifs.length) <= 0.05
+             && anchors.length && hasRecon && REALTIME_TIERS.has(tierMaj)) {
+    verdict = "VERIFIED";
+    verdictColor = "green";
+    headline = "Everything checks out";
+    why = "Every stated intent has a reconciliation event, the reconciliations match the external truth source, the chain is anchored to immutable external storage, and there are periodic ground-truth checks. This is a working log you could take to a regulator.";
+  } else if (coverage < 0.5 || (accuracy !== null && accuracy < 0.8) || !anchors.length || cons_pts < 30) {
+    verdict = "WEAK";
+    verdictColor = "red";
+    headline = "This chain doesn't have enough evidence";
+    why = "Key verifiability evidence is missing — see the breakdown below. Note: the chain itself isn't tampered with (all the hashes match), but no one outside this agent has confirmed what it says happened.";
+  } else {
+    verdict = "MIXED";
+    verdictColor = "yellow";
+    headline = "Most of it lines up, with some gaps";
+    why = "The chain is structurally fine and contains real activity, but some evidence is missing — like external anchoring, periodic reconciliation, or real-time venue confirmation. See the breakdown below.";
+  }
+
+  // human-readable issue list
+  const issues = [];
+  if (anchors.length === 0) issues.push("The chain hasn't been anchored to anything external (IPFS, Bitcoin OP_RETURN, etc.). Once anchored, anyone modifying the chain after that point would be detectable.");
+  else {
+    const ageH = (last - anchors[anchors.length-1].ts)/3600000;
+    if (ageH > 24) issues.push(`Last external anchor was ${ageH.toFixed(0)}h ago — anything older than 24h is considered stale.`);
+  }
+  if (!hasRecon && hasClaim) issues.push("There's no reconciliation event yet. A reconciliation is the explicit proof that 'what the agent thinks it has' equals 'what the external source confirms it has'.");
+  if (!hasError && claims.size >= 20) issues.push("After this many stated actions, never seeing a single failure is suspicious — real systems fail occasionally. If failures are being swallowed silently, what you don't see is what you don't get a receipt for.");
+  if (tierMaj === "backfill_local") issues.push("All evidence so far is backfilled (written after the fact), not real-time. Backfill can be fabricated; real-time records have a much higher bar to fake.");
+  if (tierMaj === "manual") issues.push("All evidence is manually attested by the agent itself — no machine receipts. There's a ceiling on how much trust this can earn.");
+
+  return {
+    verdict, verdictColor, headline, why,
+    score: raw, score_clamped: raw,
+    dims: {
+      coverage: cov_pts, accuracy: acc_pts, consistency: cons_pts,
+      transparency: transparency_pts, integrity: integrity_pts
+    },
+    summary: { events: events.length, claims: claims.size, verified: verified_ok, errors: events.filter(e=>e.kind==="error").length, recons: events.filter(e=>e.kind==="reconciliation").length },
+    issues,
+    tierMaj,
+    headTs: events[0].ts,
+    tailTs: events[events.length-1].ts,
+    agent: events[0].agent
+  };
+}
+
+// ── Rendering ──
+function dimClass(v) { return v >= 80 ? "high" : v >= 50 ? "mid" : "low"; }
+
+const DIM_META = {
+  coverage: {
+    name: "Intent → outcome coverage",
+    q: "Does every stated intent get a corresponding outcome (success or failure)?",
+    fix: "Wait for the chain to contain claim events. If this is 0, the agent hasn't tried to take any action yet."
+  },
+  accuracy: {
+    name: "Reconciliation accuracy",
+    q: "When the agent confirms an outcome, does it match the external source byte-for-byte (price, size, ID, file hash)?",
+    fix: "Looks at the gap between what the agent reports vs. what an external source confirms. The bigger the gap, the more the agent's self-report diverges from reality."
+  },
+  consistency: {
+    name: "Persistent presence",
+    q: "Are there any suspicious silent periods? (e.g. 5 days of nothing in a 7-day window)",
+    fix: "Long gaps between heartbeats lose points. Ideal: a heartbeat every ~5 min, so a 7-day window has all ~2016 5-min buckets covered."
+  },
+  transparency: {
+    name: "Honesty about failure",
+    q: "Has the agent ever reported a failure? Does it reconcile periodically? Are tolerances written down?",
+    fix: "Missing error events / reconciliation events / match.tolerance_used each lose points. Real systems aren't perfect — never reporting failure is itself a red flag."
+  },
+  integrity: {
+    name: "Tamper resistance",
+    q: "Has this chain been anchored to something external and immutable?",
+    fix: "Write the chain's Merkle root to IPFS / Bitcoin OP_RETURN / Arweave / a GitHub commit. Once anchored, anyone can independently verify the chain is the same one that existed at anchor time — no quiet edits possible."
+  }
+};
+
+function render(events, report, score, elapsedMs) {
+  const out = document.getElementById("out");
+  if (report.status === "BROKEN") {
+    out.innerHTML = `
+      <div class="verdict red">
+        <div class="icon">⚠️</div>
+        <div class="headline">This chain has a structural problem</div>
+        <div class="why">${report.issue}<br><br>This means an event in the chain was modified after being written — either a bug, or someone edited the file directly. Either way, this receipt can't be used as evidence.</div>
+      </div>
+      <div class="foot" style="text-align:left;margin-top:24px;">
+        To see which event broke, open browser DevTools (Cmd+Option+I) and check the console, or use the
+        <a href="./index.html">technical verifier</a>.
+      </div>
+    `;
+    return;
+  }
+  if (!score) {
+    out.innerHTML = `<div class="err">The chain is empty.</div>`;
+    return;
+  }
+
+  const agentInfo = AGENT_TRANSLATIONS[score.agent] || { who: "Unknown agent", note: "" };
+
+  let html = "";
+
+  // verdict block
+  const icons = { VERIFIED: "✅", MIXED: "⚠️", WEAK: "❌", WAITING: "⏳", BROKEN: "🚨" };
+  html += `<div class="verdict ${score.verdictColor}">
+    <div class="icon">${icons[score.verdict] || "•"}</div>
+    <div class="headline">${score.headline}</div>
+    <div class="why">${score.why}</div>
+    <div class="score">Trust score: <b>${score.score}</b> / 100${score.score < 40 ? ' · but read the explanation above first' : ''}</div>
+  </div>`;
+
+  // agent identity
+  html += `<div class="agent">
+    <div class="label">Which AI's ledger is this</div>
+    <div class="name">${agentInfo.who}</div>
+    ${agentInfo.note ? `<div style="margin-top:4px;font-size:13px;color:var(--muted);">${agentInfo.note}</div>` : ""}
+    <div class="raw">agent id: ${escapeHtml(score.agent)}</div>
+  </div>`;
+
+  // key numbers
+  html += `<div class="stats">
+    <div class="stat"><div class="v">${score.summary.events}</div><div class="k">Total entries</div></div>
+    <div class="stat"><div class="v">${score.summary.claims}</div><div class="k">Stated intents</div></div>
+    <div class="stat"><div class="v">${score.summary.verified}</div><div class="k">Confirmed</div></div>
+    <div class="stat"><div class="v">${score.summary.errors}</div><div class="k">Reported failures</div></div>
+    <div class="stat"><div class="v">${score.summary.recons}</div><div class="k">Reconciliations</div></div>
+    <div class="stat"><div class="v">${fmtAge(score.tailTs)}</div><div class="k">Latest entry</div></div>
+  </div>`;
+
+  // issue alerts
+  if (score.issues && score.issues.length) {
+    html += `<div class="alerts">
+      <div class="a-head">Why this isn't a perfect score</div>
+      <ul>${score.issues.map(i => `<li>${i}</li>`).join("")}</ul>
+    </div>`;
+  }
+
+  // timeline
+  const recent = events.slice(-12).reverse();
+  html += `<div class="section">
+    <h2>Recent activity</h2>
+    <div class="events">`;
+  for (const ev of recent) {
+    const tpl = KIND_TEMPLATES[ev.kind];
+    let icon = "•", what = ev.kind, extra = "", klass = "";
+    if (tpl) {
+      icon = tpl.icon;
+      klass = tpl.klass;
+      const r = tpl.render(ev.data || {});
+      what = r.what;
+      extra = r.extra || "";
+    } else {
+      what = `${ev.kind} (unknown event type)`;
+    }
+    html += `<div class="event ${klass}">
+      <div class="e-icon">${icon}</div>
+      <div class="e-body">
+        <div class="what">${escapeHtml(what)}</div>
+        ${extra ? `<div class="extra">${escapeHtml(extra)}</div>` : ""}
+      </div>
+      <div class="e-time">${fmtTime(ev.ts)}</div>
+    </div>`;
+  }
+  if (events.length > 12) {
+    html += `<div class="event" style="justify-content:center;text-align:center;color:var(--muted);font-size:12px;grid-template-columns:1fr;">+ ${events.length - 12} earlier entries — see the technical verifier for the full chain</div>`;
+  }
+  html += `</div></div>`;
+
+  // 5-dim breakdown
+  html += `<div class="section">
+    <h2>Why this score</h2>
+    <div class="dims">`;
+  for (const [k, v] of Object.entries(score.dims)) {
+    const meta = DIM_META[k];
+    html += `<div class="dim ${dimClass(v)}">
+      <div class="dim-head">
+        <span class="dim-name">${meta.name}</span>
+        <span class="dim-score">${v}</span>
+      </div>
+      <div class="dim-q">${meta.q}</div>
+      <div class="dim-fix">${meta.fix}</div>
+    </div>`;
+  }
+  html += `</div></div>`;
+
+  // verification proof
+  html += `<div class="section">
+    <h2>How this verification happened</h2>
+    <div style="padding:14px 18px;background:var(--card);border:1px solid var(--border);border-radius:10px;font-size:13px;line-height:1.7;">
+      The browser recomputed the SHA-256 hash of every event in the chain and checked that each
+      <code>prev_hash</code> matches the previous event's <code>hash</code>. All ${events.length}
+      events passed (in <b>${elapsedMs} ms</b>). Anyone can do this — right-click → View Source and look
+      at the <code>verifyChain()</code> function.<br>
+      This step only proves the chain hasn't been edited after the fact. Whether the events on the chain
+      actually correspond to real-world events depends on external anchoring + reconciliation evidence.
+    </div>
+  </div>`;
+
+  // folded technical details
+  html += `<details>
+    <summary>↓ Technical fields (for developers / auditors)</summary>
+    <table class="meta-tbl">
+      <tr><td>Chain length</td><td>${events.length} events</td></tr>
+      <tr><td>First event ts</td><td>${new Date(score.headTs).toISOString()}</td></tr>
+      <tr><td>Last event ts</td><td>${new Date(score.tailTs).toISOString()}</td></tr>
+      <tr><td>agent id</td><td>${escapeHtml(score.agent)}</td></tr>
+      <tr><td>trust tier (majority)</td><td>${escapeHtml(score.tierMaj)}</td></tr>
+      <tr><td>raw score</td><td>${score.score}</td></tr>
+    </table>
+    <div style="margin-top:14px;color:var(--muted);font-size:12px;">Last 3 events (raw JSON):</div>
+    <pre>${events.slice(-3).map(e => JSON.stringify(e, null, 2)).join("\n\n")}</pre>
+    <div style="margin-top:8px;"><a href="./index.html" style="color:var(--blue);">→ Switch to the technical verifier (suspicion flags, mismatch examples, unclamped score, etc.)</a></div>
+  </details>`;
+
+  out.innerHTML = html;
+}
+
+function escapeHtml(s) {
+  if (s == null) return "";
+  return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]);
+}
+
+window.addEventListener("load", loadAndRender);
+</script>
+</body>
+</html>

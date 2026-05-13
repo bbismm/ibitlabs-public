@@ -41,3 +41,12 @@ launchd/*.plist
 # Scratch / local
 tmp/
 scratch/
+
+# Receipt rule engine: rules.py is forker-config (copy from rules.example.py)
+receipt-rule-engine/rules.py
+
+# Receipt viewer: live JSONL feeds (forkers populate via their own sync)
+receipt-viewer/*.jsonl
+!receipt-viewer/code-writing-demo.jsonl
+receipt-viewer/data/*.json
+!receipt-viewer/data/*.sample

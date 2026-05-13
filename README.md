@@ -6,7 +6,7 @@ Curated public mirror of the iBitLabs live trading experiment. Canonical live su
 
 This repository is the **public mirror** of the experiment's infrastructure. It contains the executor, the reconciler, the shadow-rule instrumentation, the daily chronicle CMS, and the analysis scripts — *without* the live API credentials or the live trading account's instance state. Fork it, read it, learn from it. Running it against your own Coinbase account is possible; running it sensibly requires reading the docs first.
 
-**Status snapshot (as of last commit, not live):** Day 17 of live trading. Account $975.86 (-2.6%). 62 trades. 48.4% win rate. Carry cost ($57.64 fees + funding) exceeds realized trading losses ($14.02). For the live numbers, see `https://ibitlabs.com/signals` or hit the `/api/live-status` JSON feed.
+**Status snapshot (as of last commit, not live):** Day 36 of live trading. Account ~$984 (-1.6%). 61 trades. 54.1% win rate. SOL trades live; ETH paper-mode in parallel through 2026-05-20. For the live numbers, see `https://ibitlabs.com/signals` or hit the `/api/live-status` JSON feed.
 
 > **📖 Read the long-form essay:** [**The "We" of AI Co-Founding**](https://www.ibitlabs.com/the-we-of-ai-co-founding) — 9,500 words, 22 minutes. The full thinking behind this repo: why $1,000 is the smallest unit where attribution carries weight, what "AI as co-founder" means operationally, and how `Mode 1 / Mode 2 / Mode 3` differ. Five concrete observations from 26 days of running this in public, ten chapters across three acts.
 
@@ -28,12 +28,29 @@ Most "AI-built trading bot" demos are on paper accounts with cherry-picked scree
 ├── state_db.py                 # SQLite trade log + MFE/MAE + shadow persistence
 ├── scripts/
 │   └── analyze_shadow_12h_rule.py  # post-hoc EV analysis of shadow log
+├── receipt-rule-engine/        # reactive + self-healing layer (v0.2, added 2026-05-13)
+│   ├── engine.py               #   tails receipt JSONL chains, fires rules
+│   ├── rules.example.py        #   copy → rules.py, edit chains + actions
+│   └── scripts/                #   reference Tier-1 actions (anchor, reconcile)
+├── receipt-viewer/             # local HTML dashboards for chain observation
+│   ├── index.html              #   chain explorer
+│   ├── dashboard.html          #   3-stream KPI dashboard
+│   └── monitor.html            #   rule-engine output monitor
 ├── docs/
 │   ├── shadow_12h_rule.md      # 30-day observation window spec
 │   ├── days_cms.md             # bilingual daily-chronicle CMS operator guide
 │   └── live-restart-checklist.md  # production bot restart / recovery procedure
 └── SKILL.md                    # cryptoskill.org registry manifest
 ```
+
+### New as of 2026-05-13: receipt protocol layer
+
+The bot now emits a hash-chained receipt for every action — entry, exit, reconcile, heartbeat — to `audit_export/*.realtime.receipt.jsonl`. Two layers consume that chain locally:
+
+- **`receipt-rule-engine/`** — a small daemon that tails one or more chains and fires actions when events match declarative rules. Supports the absent pattern (fire if no event of kind X in Y seconds), `auto: true/false` gating on shell actions (default off; ntfy/iMessage low-blast-radius and never gated), and engine self-heartbeat. Rules are data, not code paths. Tier discipline documented in `engine.py`.
+- **`receipt-viewer/`** — three static HTML pages served from `127.0.0.1` (no server framework, just `file://` or any HTTP). `index.html` is a chain explorer; `dashboard.html` is a 3-stream live/shadow/paper KPI surface; `monitor.html` watches the rule-engine output chain. Open the HTML files directly or `python3 -m http.server 8092 -d receipt-viewer/`.
+
+The protocol itself is its own pip-installable package — see [`bbismm/receipt`](https://github.com/bbismm/receipt). This mirror bundles the engine + viewer because they're how *we* use the chain in practice; you can swap in your own consumers.
 
 ## What's NOT in this mirror (and why)
 
